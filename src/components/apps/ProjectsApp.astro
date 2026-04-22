@@ -1,0 +1,39 @@
+---
+const projects = [
+    {
+        title: "Nombre del proyecto",
+        description: "Descripcion corta",
+        stack: ["Astro", "Typescript", "CSS"],
+        url: "https://madara.dev",
+        repo: "https://github.com",
+        image: "/projects/preview.png", //opcional
+    },
+];
+---
+
+<section class="projects-panel">
+    <p class="app-label">Proyectos</p>
+    <h1>Mi trabajo</h1>
+
+    <div class="projects-grid">
+        {
+            projects.map((p) => (
+                <article class="project-card">
+                    <div class="project-info">
+                        <h2>{p.title}</h2>
+                        <p>{p.description}</p>
+                        <div class="project-stack">
+                            {p.stack.map((s) => (
+                                <span class="tag">{s}</span>
+                            ))}
+                        </div>
+                    </div>
+                    <div class="project-links">
+                        <a href={p.url}>Ver sitio</a>
+                        <a href={p.repo}>GitHub</a>
+                    </div>
+                </article>
+            ))
+        }
+    </div>
+</section>

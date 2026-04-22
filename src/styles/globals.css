@@ -34,6 +34,11 @@ body {
             rgba(97, 218, 251, 0.2),
             transparent 25%
         ),
+        radial-gradient(
+            circle at bottom right,
+            rgba(124, 92, 255, 0.12),
+            transparent 30%
+        ),
         linear-gradient(180deg, #09111f 0%, #0b1020 100%);
 }
 
@@ -55,13 +60,16 @@ body {
 
 .window {
     width: min(900px, 100%);
-    min-height: 520px;
+    min-height: min(520px, calc(100vh - 6rem));
     border: 1px solid var(--border);
     border-radius: var(--radius);
     overflow: hidden;
     background: var(--bg-elevated);
     backdrop-filter: blur(12px);
     box-shadow: var(--shadow);
+    position: absolute;
+    top: 2rem;
+    left: 2rem;
 }
 
 .window-titlebar {
@@ -89,6 +97,17 @@ body {
     border: 0;
     border-radius: 6px;
     cursor: pointer;
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text);
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s;
+}
+
+.window-controls button:hover {
+    background: rgba(255, 255, 255, 0.18);
 }
 
 .window-content {
@@ -115,6 +134,7 @@ body {
     padding: 0.7rem 1rem;
     border-radius: 10px;
     cursor: pointer;
+    font-size: 0.875rem;
 }
 
 .taskbar-apps {
@@ -151,7 +171,7 @@ body {
 .app-panel p {
     max-width: 60ch;
     color: var(--muted);
-    line-height: 1.7cqmax;
+    line-height: 1.7;
 }
 
 .app-actions {
@@ -167,4 +187,78 @@ body {
     border-radius: 10px;
     background: var(--panel-soft);
     border: 1px solid var(--border);
+    transition:
+        background 0.2s,
+        border-color 0.2s;
+}
+
+.app-actions a:hover {
+    background: var(--panel);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.project-card {
+    background: var(--panel-soft);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 1rem;
+    transition: border-color 0.2s;
+}
+
+.project-card:hover {
+    border-color: rgba(255, 255, 255, 0.35);
+}
+
+.project-card h2 {
+    margin: 0 0 0.5rem;
+    font-size: 1.1rem;
+}
+
+.project-card p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+.project-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.75rem;
+}
+
+.tag {
+    font-size: 0.75rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    background: rgba(97, 218, 251, 0.1);
+    color: var(--accent);
+    border: 1px solid rgba(97, 218, 251, 0.2);
+}
+
+.project-links a {
+    color: var(--text);
+    text-decoration: none;
+    font-size: 0.85rem;
+    padding: 0.5rem 0.9rem;
+    border-radius: 8px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    transition: border-color 0.2s;
+}
+
+.project-links a:hover {
+    border-color: rgba(255, 255, 255, 0.3);
 }
