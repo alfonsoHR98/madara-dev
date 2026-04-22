@@ -1,18 +1,17 @@
 ---
-import "../styles/globals.css";
-const { title = "Madara OS" } = Astro.props;
+import OSLayout from "../layouts/OSLayout.astro";
+import Desktop from "../components/shell/Desktop.astro";
+import Taskbar from "../components/shell/Taskbar.astro";
+import WindowFrame from "../components/windows/WindowFrame.astro";
+import AboutApp from "../components/apps/AboutApp.astro";
 ---
 
-<!doctype html>
-<html lang="es">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>{title}</title>
-    </head>
-    <body>
-        <div class="os-shell">
-            <slot />
-        </div>
-    </body>
-</html>
+<OSLayout title="Madara Os">
+    <Desktop>
+        <WindowFrame title="Sobre mí">
+            <AboutApp />
+        </WindowFrame>
+    </Desktop>
+
+    <Taskbar />
+</OSLayout>
