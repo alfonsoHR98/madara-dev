@@ -1,12 +1,13 @@
 ---
 interface Props {
     title: string;
+    id: string;
 }
 
-const { title } = Astro.props;
+const { title, id } = Astro.props;
 ---
 
-<article class="window" aria-label={title}>
+<article class="window" id={id} aria-label={title}>
     <header class="window-titlebar">
         <div class="window-title">{title}</div>
 

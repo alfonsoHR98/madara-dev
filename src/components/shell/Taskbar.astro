@@ -4,13 +4,35 @@
     </button>
 
     <nav class="taskbar-apps" aria-label="Aplicaciones abiertas">
-        <button type="button" class="taskbar-app active">Sobre mí</button>
-        <button type="button" class="taskbar-app">Proyectos</button>
-        <button type="button" class="taskbar-app">Contacto</button>
+        <button
+            type="button"
+            class="taskbar-app active"
+            data-target="window-about">Sobre mí</button
+        >
+        <button type="button" class="taskbar-app" data-target="window-projects"
+            >Proyectos</button
+        >
+        <button type="button" class="taskbar-app" data-target="window-contact"
+            >Contacto</button
+        >
     </nav>
 
     <section class="system-tray" aria-label="Área del sistema">
         <span>ES</span>
-        <span>17:04</span>
+        <span id="system-clock">00:00</span>
     </section>
 </footer>
+
+<script>
+    function updateClock() {
+        const clock = document.getElementById("system-clock");
+        if (!clock) return;
+        const now = new Date();
+        const h = now.getHours().toString().padStart(2, "0");
+        const m = now.getMinutes().toString().padStart(2, "0");
+        clock.textContent = `${h}:${m}`;
+    }
+
+    updateClock();
+    setInterval(updateClock, 1000);
+</script>
