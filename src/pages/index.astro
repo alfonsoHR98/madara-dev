@@ -29,23 +29,138 @@ import ContactApp from "../components/apps/ContactApp.astro";
         );
         const windows = document.querySelectorAll<HTMLElement>(".window");
 
-        function activate(targetId: string) {
-            windows.forEach((w) => w.classList.remove("active"));
-            buttons.forEach((b) => b.classList.remove("active"));
+        let topZ = 10;
 
-            document.getElementById(targetId)?.classList.add("active");
+        windows.forEach((w, i) => {
+            w.style.top = `${2 + i * 2}rem`;
+            w.style.left = `${2 + i * 2}rem`;
+        });
+
+        function bringToFront(win: HTMLElement) {
+            topZ++;
+            win.style.zIndex = String(topZ);
+        }
+
+        function getTaskbarBtn(targetId: string) {
+            return document.querySelector<HTMLElement>(
+                `.taskbar-app[data-target="${targetId}"]`,
+            );
+        }
+
+        function minimizeWindow(win: HTMLElement) {
+            const id = win.id;
+            const btn = getTaskbarBtn(id);
+            if (!btn) return;
+
+            const btnRect = btn.getBoundingClientRect();
+            const winRect = win.getBoundingClientRect();
+
+            const dx =
+                btnRect.left +
+                btnRect.width / 2 -
+                (winRect.left + winRect.width / 2);
+            const dy =
+                btnRect.top +
+                btnRect.height / 2 -
+                (winRect.top + winRect.height / 2);
+
+            win.style.transition =
+                "transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.35s ease";
+            win.style.transform = `translate(${dx}px, ${dy}px) scale(0.15)`;
+            win.style.opacity = "0";
+            win.style.pointerEvents = "none";
+
+            btn.classList.remove("active");
+
+            setTimeout(() => {
+                win.classList.remove("active");
+                win.style.transform = "";
+                win.style.transition = "";
+            }, 350);
+        }
+
+        function activate(targetId: string) {
+            const target = document.getElementById(targetId) as HTMLElement;
+            if (!target) return;
+
+            const isActive = target.classList.contains("active");
+
+            if (isActive) {
+                minimizeWindow(target);
+                return;
+            }
+
+            buttons.forEach((b) => b.classList.remove("active"));
+            target.classList.add("active");
+            target.style.opacity = "1";
+            target.style.pointerEvents = "auto";
+            bringToFront(target);
+
             buttons.forEach((b) => {
                 if (b.dataset.target === targetId) b.classList.add("active");
             });
         }
 
-        // Mostrar la primera ventana al cargar
         activate("window-about");
 
         buttons.forEach((btn) => {
             btn.addEventListener("click", () => {
                 if (btn.dataset.target) activate(btn.dataset.target);
             });
+        });
+
+        // Botón cerrar
+        windows.forEach((win) => {
+            const closeBtn = win.querySelector<HTMLElement>(
+                '[aria-label="Cerrar"]',
+            );
+            const minimizeBtn = win.querySelector<HTMLElement>(
+                '[aria-label="Minimizar"]',
+            );
+
+            closeBtn?.addEventListener("click", () => {
+                win.classList.remove("active");
+                win.style.opacity = "0";
+                win.style.pointerEvents = "none";
+                const id = win.id;
+                getTaskbarBtn(id)?.classList.remove("active");
+            });
+
+            minimizeBtn?.addEventListener("click", () => {
+                minimizeWindow(win);
+            });
+
+            // Drag
+            const titlebar = win.querySelector<HTMLElement>(".window-titlebar");
+            if (!titlebar) return;
+
+            let dragging = false;
+            let startX = 0,
+                startY = 0,
+                startLeft = 0,
+                startTop = 0;
+
+            titlebar.addEventListener("mousedown", (e) => {
+                dragging = true;
+                startX = e.clientX;
+                startY = e.clientY;
+                startLeft = win.offsetLeft;
+                startTop = win.offsetTop;
+                bringToFront(win);
+                e.preventDefault();
+            });
+
+            document.addEventListener("mousemove", (e) => {
+                if (!dragging) return;
+                win.style.left = `${startLeft + (e.clientX - startX)}px`;
+                win.style.top = `${startTop + (e.clientY - startY)}px`;
+            });
+
+            document.addEventListener("mouseup", () => {
+                dragging = false;
+            });
+
+            win.addEventListener("mousedown", () => bringToFront(win));
         });
     </script>
 </OSLayout>

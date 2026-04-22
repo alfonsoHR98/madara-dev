@@ -68,8 +68,6 @@ body {
     backdrop-filter: blur(12px);
     box-shadow: var(--shadow);
     position: absolute;
-    top: 2rem;
-    left: 2rem;
     opacity: 0;
     transform: scale(0.97) translateY(8px);
     transition:
@@ -84,12 +82,18 @@ body {
 }
 
 .window-titlebar {
+    cursor: grab;
+    user-select: none;
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 0.75rem 1rem;
     background: linear-gradient(180deg, #315a9f 0%, #22457e 100%);
     border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.window-titlebar:active {
+    cursor: grabbing;
 }
 
 .window-title {
