@@ -262,3 +262,67 @@ body {
 .project-links a:hover {
     border-color: rgba(255, 255, 255, 0.3);
 }
+
+.contact-description {
+    color: var(--muted);
+    line-height: 1.7;
+    max-width: 50ch;
+    margin: 0 0 1.5rem;
+}
+
+.contact-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    max-width: 420px;
+}
+
+.contact-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    background: var(--panel-soft);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    text-decoration: none;
+    color: var(--text);
+    transition:
+        border-color 0.2s,
+        background 0.2s;
+}
+
+.contact-card:hover {
+    border-color: rgba(97, 218, 251, 0.4);
+    background: var(--panel);
+}
+
+.contact-icon {
+    font-size: 1.25rem;
+    width: 2.5rem;
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(97, 218, 251, 0.08);
+    border-radius: 8px;
+    color: var(--accent);
+}
+
+.contact-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.contact-label {
+    font-size: 0.8rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.contact-handle {
+    font-size: 0.95rem;
+    font-weight: 500;
+}

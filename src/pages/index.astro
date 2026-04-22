@@ -5,6 +5,7 @@ import Taskbar from "../components/shell/Taskbar.astro";
 import WindowFrame from "../components/windows/WindowFrame.astro";
 import AboutApp from "../components/apps/AboutApp.astro";
 import ProjectsApp from "../components/apps/ProjectsApp.astro";
+import ContactApp from "../components/apps/ContactApp.astro";
 ---
 
 <OSLayout title="Madara Os">
@@ -14,6 +15,9 @@ import ProjectsApp from "../components/apps/ProjectsApp.astro";
         </WindowFrame>
         <WindowFrame title="Proyectos">
             <ProjectsApp />
+        </WindowFrame>
+        <WindowFrame title="Contacto">
+            <ContactApp />
         </WindowFrame>
     </Desktop>
 
