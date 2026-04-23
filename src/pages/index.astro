@@ -63,9 +63,18 @@ import StartMenu from "../components/shell/StartMenu.astro";
             w.style.left = `${2 + i * 2}rem`;
         });
 
+        function setFocused(targetId: string) {
+            document.querySelectorAll<HTMLElement>(".taskbar-app").forEach(b => b.classList.remove("focused"));
+            const btn = document.querySelector<HTMLElement>(
+                `.taskbar-pinned [data-target="${targetId}"], #taskbar-running [data-target="${targetId}"]`
+            );
+            btn?.classList.add("focused");
+        }
+
         function bringToFront(win: HTMLElement) {
             topZ++;
             win.style.zIndex = String(topZ);
+            setFocused(win.id);
         }
 
         const PINNED = ["window-terminal"];
@@ -92,7 +101,9 @@ import StartMenu from "../components/shell/StartMenu.astro";
         }
 
         function getAnyTaskbarBtn(targetId: string) {
-            return document.querySelector<HTMLElement>(`[data-target="${targetId}"]`);
+            return document.querySelector<HTMLElement>(
+                `.taskbar-pinned [data-target="${targetId}"], #taskbar-running [data-target="${targetId}"]`
+            );
         }
 
         function minimizeWindow(win: HTMLElement) {
