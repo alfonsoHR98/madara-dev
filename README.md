@@ -1,46 +1,65 @@
-# Astro Starter Kit: Basics
+# MadaraOS Portfolio
 
-```sh
-pnpm create astro@latest -- --template basics
+Portafolio personal con estética de sistema operativo (inspiración macOS), construido con Astro + React.
+
+Incluye:
+- Menubar glass en la parte superior
+- Dock interactivo con efecto de magnificación
+- Ventanas arrastrables (About, Projects, Contact, Terminal)
+- Terminal interactiva con comando `neofetch`
+- Wallpaper estático personalizado
+
+## Stack
+
+- Astro 5
+- React 19
+- TypeScript
+- CSS custom (sin framework UI)
+- Lucide Icons
+
+## Ejecutar en local
+
+```bash
+npm install
+npm run dev
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+La app corre en `http://localhost:4321`.
 
-## 🚀 Project Structure
+## Scripts
 
-Inside of your Astro project, you'll see the following folders and files:
+```bash
+npm run dev      # desarrollo
+npm run build    # build producción
+npm run preview  # preview local del build
+```
+
+## Estructura principal
 
 ```text
-/
-├── public/
-│   └── favicon.svg
-├── src
-│   ├── assets
-│   │   └── astro.svg
-│   ├── components
-│   │   └── Welcome.astro
-│   ├── layouts
-│   │   └── Layout.astro
-│   └── pages
-│       └── index.astro
-└── package.json
+src/
+  components/
+    apps/          # apps renderizadas dentro de ventanas
+    shell/         # menubar, desktop, dock, wallpaper, start-menu
+    windows/       # frame base de ventana
+  layouts/
+    OSLayout.astro
+  pages/
+    index.astro    # orquestación del shell + lógica de interacción
+  styles/
+    globals.css
+public/
+  wallpapers/
+    back.png
 ```
 
-To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
+## Personalización rápida
 
-## 🧞 Commands
+- Fondo: reemplaza `public/wallpapers/back.png`
+- Dock y ventanas: estilos en `src/styles/globals.css`
+- Comandos de terminal: `src/components/apps/TerminalApp.astro`
+- Apps y contenido: `src/components/apps/*`
 
-All commands are run from the root of the project, from a terminal:
+## Objetivo del proyecto
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `pnpm install`             | Installs dependencies                            |
-| `pnpm dev`             | Starts local dev server at `localhost:4321`      |
-| `pnpm build`           | Build your production site to `./dist/`          |
-| `pnpm preview`         | Preview your build locally, before deploying     |
-| `pnpm astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `pnpm astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+Mostrar perfil profesional y proyectos en una interfaz inmersiva, con foco en experiencia visual, interacción fluida y branding técnico personal.
