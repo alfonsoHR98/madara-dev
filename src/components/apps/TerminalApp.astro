@@ -1,0 +1,169 @@
+<div class="terminal-app">
+    <div class="terminal-output" id="terminal-output">
+        <div class="terminal-line">
+            <span class="term-green">MadaraOS</span> <span class="term-muted">v1.0.0</span>
+        </div>
+        <div class="terminal-line term-muted">Escribe <span class="term-accent">help</span> para ver los comandos disponibles.</div>
+        <div class="terminal-line"> </div>
+    </div>
+    <div class="terminal-input-row">
+        <span class="terminal-prompt">madara@os:~$</span>
+        <input type="text" id="terminal-input" class="terminal-input" autocomplete="off" spellcheck="false" autofocus />
+    </div>
+</div>
+
+<script>
+    const output = document.getElementById("terminal-output")!;
+    const input = document.getElementById("terminal-input") as HTMLInputElement;
+
+    const history: string[] = [];
+    let historyIndex = -1;
+
+    const COMMANDS: Record<string, () => string[]> = {
+        help: () => [
+            '<span class="term-accent">Comandos disponibles:</span>',
+            '  <span class="term-green">whoami</span>       — Información sobre mí',
+            '  <span class="term-green">skills</span>       — Stack tecnológico',
+            '  <span class="term-green">projects</span>     — Mis proyectos',
+            '  <span class="term-green">contact</span>      — Cómo contactarme',
+            '  <span class="term-green">open &lt;app&gt;</span>   — Abre una ventana (about, projects, contact)',
+            '  <span class="term-green">date</span>         — Fecha y hora actual',
+            '  <span class="term-green">neofetch</span>     — Info del sistema',
+            '  <span class="term-green">clear</span>        — Limpiar terminal',
+        ],
+        whoami: () => [
+            '<span class="term-accent">Alfonso Hernández</span> <span class="term-muted">(@madara)</span>',
+            'Full Stack Developer',
+            'Especializado en interfaces inmersivas y automatización.',
+            'Ubicación: México 🇲🇽',
+        ],
+        skills: () => [
+            '<span class="term-accent">Stack tecnológico:</span>',
+            '  Frontend  →  <span class="term-green">Astro · Next.js · TypeScript · CSS</span>',
+            '  Backend   →  <span class="term-green">Node.js · PostgreSQL · MySQL · MongoDB</span>',
+            '  Cloud     →  <span class="term-green">AWS · Google Cloud · Supabase</span>',
+            '  DevOps    →  <span class="term-green">n8n · Automatizaciones</span>',
+        ],
+        projects: () => [
+            '<span class="term-accent">Proyectos:</span>',
+            '  [1] <span class="term-green">MadaraOS Portfolio</span>  — Astro · TypeScript · CSS',
+            '  [2] <span class="term-green">Workflow Automator</span>  — n8n · Node.js · PostgreSQL',
+            '  [3] <span class="term-green">Dashboard Analytics</span> — Next.js · Supabase',
+            '  [4] <span class="term-green">E-commerce API</span>      — Node.js · MySQL · AWS',
+            '',
+            'Usa <span class="term-accent">open projects</span> para ver más detalles.',
+        ],
+        contact: () => [
+            '<span class="term-accent">Contacto:</span>',
+            '  GitHub  →  <span class="term-green">github.com/alfonsoHR98</span>',
+            '  Email   →  <span class="term-green">alfonsohr_98@outlook.com</span>',
+            '  LinkedIn → <span class="term-green">linkedin.com/in/tu-usuario</span>',
+        ],
+        date: () => [
+            new Date().toLocaleString("es-MX", {
+                weekday: "long", year: "numeric",
+                month: "long", day: "numeric",
+                hour: "2-digit", minute: "2-digit",
+            }),
+        ],
+        neofetch: () => [
+            '<span class="term-green">        .\'\'.</span>         <span class="term-accent">madara</span><span class="term-muted">@</span><span class="term-accent">madaraos</span>',
+            '<span class="term-green">    .,\'\'    \'\'.</span>      ─────────────────',
+            '<span class="term-green">  .\'  .-""-. \'\'.</span>     <span class="term-muted">OS:</span>     MadaraOS v1.0.0',
+            '<span class="term-green"> /  .\'      \'.</span>  \\    <span class="term-muted">Shell:</span>  MadaraShell',
+            '<span class="term-green">|  /  .-""-. \\  |</span>   <span class="term-muted">Stack:</span>  Astro · TypeScript',
+            '<span class="term-green">|  | /      \\ |  |</span>   <span class="term-muted">Cloud:</span>  AWS · GCloud',
+            '<span class="term-green"> \\ \'. \'.__.\'  /  /</span>   <span class="term-muted">Theme:</span>  Dark Neon',
+            '<span class="term-green">  \'.\' \'-..-\' .\'</span>     <span class="term-muted">CPU:</span>    Full Stack',
+            '<span class="term-green">    \'._______.\'</span>',
+        ],
+        clear: () => {
+            output.innerHTML = "";
+            return [];
+        },
+    };
+
+    function print(lines: string[], isCommand = false, cmd = "") {
+        if (isCommand) {
+            const row = document.createElement("div");
+            row.className = "terminal-line";
+            row.innerHTML = `<span class="terminal-prompt">madara@os:~$</span> <span class="term-white">${cmd}</span>`;
+            output.appendChild(row);
+        }
+
+        for (const line of lines) {
+            const row = document.createElement("div");
+            row.className = "terminal-line";
+            row.innerHTML = line === "" ? "&nbsp;" : line;
+            output.appendChild(row);
+        }
+
+        output.scrollTop = output.scrollHeight;
+    }
+
+    function handleOpen(arg: string) {
+        const map: Record<string, string> = {
+            about: "window-about",
+            projects: "window-projects",
+            contact: "window-contact",
+        };
+        const id = map[arg];
+        if (id) {
+            const win = document.getElementById(id) as HTMLElement;
+            if (win) {
+                win.classList.add("active");
+                win.style.opacity = "1";
+                win.style.pointerEvents = "auto";
+            }
+            return [`Abriendo <span class="term-green">${arg}</span>...`];
+        }
+        return [`<span class="term-red">Error:</span> app desconocida. Opciones: about, projects, contact`];
+    }
+
+    function run(raw: string) {
+        const trimmed = raw.trim().toLowerCase();
+        if (!trimmed) return;
+
+        history.unshift(trimmed);
+        historyIndex = -1;
+
+        const [cmd, ...args] = trimmed.split(" ");
+        print([], true, raw.trim());
+
+        if (cmd === "open") {
+            print(handleOpen(args[0] ?? ""));
+        } else if (COMMANDS[cmd]) {
+            const result = COMMANDS[cmd]();
+            if (result.length > 0) print(result);
+        } else {
+            print([`<span class="term-red">comando no encontrado:</span> ${cmd} — escribe <span class="term-accent">help</span>`]);
+        }
+
+        print(["&nbsp;"]);
+    }
+
+    input.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+            run(input.value);
+            input.value = "";
+        } else if (e.key === "ArrowUp") {
+            e.preventDefault();
+            if (historyIndex < history.length - 1) {
+                historyIndex++;
+                input.value = history[historyIndex];
+            }
+        } else if (e.key === "ArrowDown") {
+            e.preventDefault();
+            if (historyIndex > 0) {
+                historyIndex--;
+                input.value = history[historyIndex];
+            } else {
+                historyIndex = -1;
+                input.value = "";
+            }
+        }
+    });
+
+    // Focus al hacer clic en cualquier parte de la terminal
+    document.querySelector(".terminal-app")?.addEventListener("click", () => input.focus());
+</script>

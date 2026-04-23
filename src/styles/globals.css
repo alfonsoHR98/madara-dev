@@ -920,3 +920,234 @@ body {
     border-color: rgba(255, 95, 87, 0.4);
     background: rgba(255, 95, 87, 0.08);
 }
+
+/* ── Taskbar center zone ── */
+.taskbar-center {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.taskbar-pinned {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.taskbar-separator {
+    width: 1px;
+    height: 24px;
+    background: rgba(255, 255, 255, 0.1);
+    margin: 0 0.25rem;
+}
+
+.taskbar-running {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+/* ── Browser App ── */
+.browser-app {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.browser-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 0.75rem;
+    background: rgba(255, 255, 255, 0.03);
+    border-bottom: 1px solid var(--border);
+}
+
+.browser-nav-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.15s, color 0.15s;
+}
+
+.browser-nav-btn:hover {
+    background: rgba(255, 255, 255, 0.07);
+    color: var(--text);
+}
+
+.browser-url-wrap {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.4rem 0.75rem;
+    transition: border-color 0.2s;
+}
+
+.browser-url-wrap:focus-within {
+    border-color: rgba(79, 158, 255, 0.4);
+}
+
+.browser-url-wrap svg {
+    stroke: var(--muted);
+    flex-shrink: 0;
+}
+
+.browser-url-wrap input {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    width: 100%;
+}
+
+.browser-frame {
+    flex: 1;
+    border: none;
+    width: 100%;
+    min-height: 420px;
+    background: white;
+}
+
+/* ── Terminal App ── */
+#window-terminal {
+    min-height: 0;
+    height: 520px;
+}
+
+#window-terminal .window-content {
+    padding: 0;
+    height: calc(100% - 42px);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.terminal-app {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: #060a10;
+    padding: 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    cursor: text;
+    overflow: hidden;
+}
+
+.terminal-output {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    margin-bottom: 0.5rem;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(79, 158, 255, 0.3) transparent;
+}
+
+.terminal-line {
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+
+.terminal-input-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+    padding-top: 0.5rem;
+    border-top: 1px solid rgba(255,255,255,0.05);
+}
+
+.terminal-prompt {
+    color: #3ecf8e;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.terminal-input {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #e2eaff;
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    flex: 1;
+    caret-color: #4f9eff;
+}
+
+.term-green  { color: #3ecf8e; }
+.term-accent { color: #4f9eff; }
+.term-muted  { color: #6b7fa3; }
+.term-white  { color: #e2eaff; }
+.term-red    { color: #ff5f57; }
+
+.browser-home {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 2rem;
+    text-align: center;
+    color: var(--muted);
+}
+
+.browser-home svg {
+    stroke: var(--muted);
+    opacity: 0.3;
+}
+
+.browser-home p {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text);
+    margin: 0;
+}
+
+.browser-home span {
+    font-size: 0.82rem;
+    color: var(--muted);
+    max-width: 36ch;
+}
+
+.browser-suggestions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.browser-suggestions button {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    padding: 0.35rem 0.85rem;
+    border-radius: 6px;
+    border: 1px solid rgba(79, 158, 255, 0.3);
+    background: rgba(79, 158, 255, 0.08);
+    color: var(--accent);
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+}
+
+.browser-suggestions button:hover {
+    background: rgba(79, 158, 255, 0.16);
+    border-color: rgba(79, 158, 255, 0.5);
+}

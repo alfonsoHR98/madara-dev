@@ -1,5 +1,5 @@
 ---
-import { User, FolderKanban, Mail, Search, Power } from "@lucide/astro";
+import { User, FolderKanban, Mail, SquareTerminal, Search, Power } from "@lucide/astro";
 ---
 
 <div class="start-menu" id="start-menu" aria-hidden="true">
@@ -28,6 +28,12 @@ import { User, FolderKanban, Mail, Search, Power } from "@lucide/astro";
                     <Mail size={22} />
                 </div>
                 <span>Contacto</span>
+            </button>
+            <button class="start-app-item" data-target="window-terminal">
+                <div class="start-app-icon">
+                    <SquareTerminal size={22} />
+                </div>
+                <span>Terminal</span>
             </button>
         </div>
     </div>

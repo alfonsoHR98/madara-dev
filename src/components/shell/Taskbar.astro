@@ -1,5 +1,5 @@
 ---
-import { User, FolderKanban, Mail } from "@lucide/astro";
+import { SquareTerminal } from "@lucide/astro";
 ---
 
 <footer class="taskbar" aria-label="Barra de tareas">
@@ -7,20 +7,16 @@ import { User, FolderKanban, Mail } from "@lucide/astro";
         ⌘
     </button>
 
-    <nav class="taskbar-apps" aria-label="Aplicaciones abiertas">
-        <button type="button" class="taskbar-app" data-target="window-about">
-            <User size={20} />
-            <span class="taskbar-app-dot"></span>
-        </button>
-        <button type="button" class="taskbar-app" data-target="window-projects">
-            <FolderKanban size={20} />
-            <span class="taskbar-app-dot"></span>
-        </button>
-        <button type="button" class="taskbar-app" data-target="window-contact">
-            <Mail size={20} />
-            <span class="taskbar-app-dot"></span>
-        </button>
-    </nav>
+    <div class="taskbar-center">
+        <div class="taskbar-pinned">
+            <button type="button" class="taskbar-app" data-target="window-terminal" title="Terminal">
+                <SquareTerminal size={20} />
+                <span class="taskbar-app-dot"></span>
+            </button>
+        </div>
+        <div class="taskbar-separator"></div>
+        <nav class="taskbar-running" id="taskbar-running" aria-label="Apps abiertas"></nav>
+    </div>
 
     <div class="system-tray">
         <span>ES</span>
