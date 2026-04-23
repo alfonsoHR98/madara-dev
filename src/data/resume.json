@@ -1,0 +1,105 @@
+{
+  "personalInfo": {
+    "name": "Alfonso Hernández",
+    "title": "Full Stack Developer",
+    "alias": "@madara",
+    "summary": "Desarrollador full stack enfocado en construir experiencias web modernas, interfaces inmersivas y sistemas escalables. Apasionado por el diseño de producto y la automatización.",
+    "location": "México",
+    "email": "alfonsohr_98@outlook.com",
+    "github": "https://github.com/alfonsoHR98",
+    "linkedin": "https://linkedin.com/in/tu-perfil",
+    "portfolio": "#",
+    "initials": "AH",
+    "avatarUrl": ""
+  },
+  "experience": [
+    {
+      "role": "Full Stack Developer",
+      "company": "Tu Empresa Actual",
+      "period": "2023 - Presente",
+      "location": "México",
+      "achievements": [
+        "Desarrollo y mantenimiento de aplicaciones web con Next.js y TypeScript",
+        "Diseño e implementación de APIs REST con Node.js y PostgreSQL",
+        "Automatización de flujos de trabajo con n8n y servicios cloud"
+      ]
+    },
+    {
+      "role": "Desarrollador Web",
+      "company": "Empresa Anterior",
+      "period": "2021 - 2023",
+      "location": "México",
+      "achievements": [
+        "Construcción de interfaces de usuario con React y Astro",
+        "Integración con bases de datos MongoDB y Supabase",
+        "Colaboración en proyectos de e-commerce y dashboards administrativos"
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "MadaraOS",
+      "tech": ["Astro", "TypeScript", "CSS"],
+      "desc": "Portfolio personal con interfaz estilo sistema operativo, ventanas arrastrables y animaciones.",
+      "url": "#",
+      "stars": null
+    },
+    {
+      "name": "Proyecto 2",
+      "tech": ["Next.js", "Supabase", "TypeScript"],
+      "desc": "Descripción breve del proyecto. Edítala en resume.json.",
+      "url": "#",
+      "stars": null
+    },
+    {
+      "name": "Proyecto 3",
+      "tech": ["Node.js", "PostgreSQL", "AWS"],
+      "desc": "Descripción breve del proyecto. Edítala en resume.json.",
+      "url": "#",
+      "stars": null
+    },
+    {
+      "name": "Proyecto 4",
+      "tech": ["React", "MongoDB", "n8n"],
+      "desc": "Descripción breve del proyecto. Edítala en resume.json.",
+      "url": "#",
+      "stars": null
+    }
+  ],
+  "skills": [
+    {
+      "category": "Frontend",
+      "items": ["TypeScript", "JavaScript", "React", "Next.js", "Astro"]
+    },
+    {
+      "category": "Backend & DB",
+      "items": ["Node.js", "PostgreSQL", "Supabase", "MongoDB", "MySQL"]
+    },
+    {
+      "category": "Cloud & DevOps",
+      "items": ["AWS", "Google Cloud", "Docker", "Git", "Vercel"]
+    },
+    {
+      "category": "Automatización",
+      "items": ["n8n", "Webhooks", "APIs REST", "GraphQL"]
+    }
+  ],
+  "education": [
+    {
+      "degree": "Tu Carrera / Grado",
+      "institution": "Tu Universidad o Instituto",
+      "period": "20XX - 20XX",
+      "extra": null
+    },
+    {
+      "degree": "Curso o Certificación",
+      "institution": "Plataforma o Institución",
+      "period": "20XX",
+      "extra": "Certificado"
+    }
+  ],
+  "languages": [
+    { "lang": "Español", "level": "Nativo", "percentage": 100 },
+    { "lang": "Inglés", "level": "Intermedio", "percentage": 65 }
+  ]
+}

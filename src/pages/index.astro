@@ -3,7 +3,7 @@ import OSLayout from "../layouts/OSLayout.astro";
 import Desktop from "../components/shell/Desktop.astro";
 import Taskbar from "../components/shell/Taskbar.astro";
 import WindowFrame from "../components/windows/WindowFrame.astro";
-import AboutApp from "../components/apps/AboutApp.astro";
+import AboutApp from "../components/apps/AboutApp.tsx";
 import ProjectsApp from "../components/apps/ProjectsApp.astro";
 import ContactApp from "../components/apps/ContactApp.astro";
 import TerminalApp from "../components/apps/TerminalApp.astro";
@@ -17,7 +17,7 @@ import StartMenu from "../components/shell/StartMenu.astro";
     <Desktop>
         <DesktopIcons />
         <WindowFrame title="Sobre mí" id="window-about">
-            <AboutApp />
+            <AboutApp client:load />
         </WindowFrame>
         <WindowFrame title="Proyectos" id="window-projects">
             <ProjectsApp />
