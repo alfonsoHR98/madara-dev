@@ -44,24 +44,240 @@ body {
 /* ── Shell ── */
 .os-shell {
     min-height: 100vh;
-    display: grid;
-    grid-template-rows: 1fr auto;
+}
+
+/* ── Menubar ── */
+.menubar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1rem;
+    background: rgba(14, 14, 16, 0.34);
+    backdrop-filter: blur(16px) saturate(1.12);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+    box-shadow:
+        0 6px 18px rgba(0, 0, 0, 0.22),
+        inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    z-index: 300;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: rgba(242, 242, 247, 0.9);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
+    user-select: none;
+    isolation: isolate;
+}
+
+.menubar::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0));
+    z-index: 0;
+}
+
+.menubar > * {
+    position: relative;
+    z-index: 1;
+}
+
+.menubar-left {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.menubar-logo {
+    background: transparent;
+    border: none;
+    color: var(--text);
+    font-size: 0.95rem;
+    cursor: pointer;
+    padding: 0.15rem 0.35rem;
+    border-radius: 5px;
+    transition: background 0.15s;
+    line-height: 1;
+}
+
+.menubar-logo:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.menubar-brand {
+    font-family: var(--font-display);
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text);
+    opacity: 0.9;
+}
+
+.menubar-right {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.72rem;
+    color: var(--text);
+}
+
+#menubar-date {
+    opacity: 0.86;
+    text-transform: capitalize;
+}
+
+#menubar-time {
+    font-weight: 500;
 }
 
 /* ── Desktop ── */
 .desktop {
     position: relative;
     overflow: hidden;
-    min-height: calc(100vh - 3.5rem);
+    min-height: 100vh;
+    padding-top: 1.75rem;
     z-index: 1;
     background-image: radial-gradient(circle, rgba(255,255,255,0.06) 1px, transparent 1px);
     background-size: 28px 28px;
 }
 
+/* ── Dock ── */
+.dock-trigger {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    z-index: 198;
+}
+
+.dock {
+    --dock-icon-size: 54px;
+    position: fixed;
+    bottom: 0.95rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+    padding: 8px 14px 8px;
+    height: 72px;
+    box-sizing: border-box;
+    background: rgba(20, 22, 26, 0.36);
+    backdrop-filter: blur(22px) saturate(1.45);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 22px;
+    box-shadow:
+        0 18px 36px rgba(0, 0, 0, 0.35),
+        0 0 0 1px rgba(255, 255, 255, 0.06) inset;
+    z-index: 200;
+    overflow: visible;
+    isolation: isolate;
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.dock::before {
+    content: "";
+    position: absolute;
+    inset: 1px;
+    border-radius: inherit;
+    pointer-events: none;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0) 65%);
+    z-index: 0;
+}
+
+.dock > * {
+    position: relative;
+    z-index: 1;
+}
+
+.dock.dock-visible {
+    transform: translateX(-50%);
+}
+
+/* Items use width/height change (not transform) so neighbors move = wave effect */
+.dock-item {
+    --dock-scale: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    height: var(--dock-icon-size);
+    gap: 0;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    position: relative;
+    transform-origin: center bottom;
+    overflow: visible;
+}
+
+/* Tooltip */
+.dock-item::before {
+    content: attr(data-label);
+    position: absolute;
+    bottom: calc(100% + 12px + (var(--dock-scale) - 1) * 46px);
+    left: 50%;
+    transform: translate(-50%, 0);
+    background: rgba(33, 33, 36, 0.92);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    padding: 0.25rem 0.66rem;
+    border-radius: 11px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s, transform 0.15s;
+    backdrop-filter: blur(8px);
+    z-index: 10;
+}
+
+.dock-item:hover::before {
+    opacity: 1;
+    transform: translate(-50%, -1px);
+}
+
+/* Icon box: scale via actual width/height so layout pushes neighbors */
+.dock-icon {
+    width: calc(var(--dock-icon-size) * var(--dock-scale));
+    height: calc(var(--dock-icon-size) * var(--dock-scale));
+    border-radius: calc(14px * var(--dock-scale));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+    transition: width 0.1s ease, height 0.1s ease, border-radius 0.1s ease, box-shadow 0.15s, border-color 0.15s;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.dock-icon svg {
+    width: 52%;
+    height: 52%;
+    stroke: white;
+    flex-shrink: 0;
+}
+
+.dock-item:hover .dock-icon {
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.5);
+    border-color: rgba(255, 255, 255, 0.34);
+}
+
+.dock-item.focused .dock-icon {
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.5), 0 0 0 2px rgba(255, 255, 255, 0.3);
+}
+
 /* ── Desktop Icons ── */
 .desktop-icons {
     position: absolute;
-    top: 1.5rem;
+    top: calc(1.75rem + 0.9rem);
     right: 1.5rem;
     display: flex;
     flex-direction: column;
@@ -119,15 +335,17 @@ body {
     position: absolute;
     width: min(860px, calc(100vw - 3rem));
     min-height: min(500px, calc(100vh - 6rem));
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.14);
     border-radius: var(--radius);
     overflow: hidden;
-    background: rgba(10, 16, 30, 0.82);
-    backdrop-filter: blur(32px) saturate(1.4);
+    background:
+        linear-gradient(180deg, rgba(28, 30, 36, 0.52) 0%, rgba(14, 15, 18, 0.52) 100%),
+        rgba(10, 10, 12, 0.44);
+    backdrop-filter: blur(22px) saturate(1.08);
     box-shadow:
-        0 40px 100px rgba(0, 0, 0, 0.7),
+        0 35px 90px rgba(0, 0, 0, 0.64),
         0 0 0 1px rgba(255, 255, 255, 0.06),
-        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
     opacity: 0;
     transform: scale(0.97) translateY(10px);
     transition:
@@ -142,9 +360,9 @@ body {
     transform: scale(1) translateY(0);
     pointer-events: auto;
     box-shadow:
-        0 40px 100px rgba(0, 0, 0, 0.75),
-        0 0 0 1px rgba(255, 255, 255, 0.13),
-        inset 0 1px 0 rgba(255, 255, 255, 0.07);
+        0 38px 96px rgba(0, 0, 0, 0.7),
+        0 0 0 1px rgba(255, 255, 255, 0.16),
+        inset 0 1px 0 rgba(255, 255, 255, 0.13);
 }
 
 /* ── Titlebar ── */
@@ -153,9 +371,11 @@ body {
     align-items: center;
     gap: 0.75rem;
     padding: 0.75rem 1rem;
-    background: rgba(255, 255, 255, 0.03);
-    border-top: 1px solid rgba(255, 255, 255, 0.07);
-    border-bottom: 1px solid var(--border);
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.02)),
+        rgba(24, 24, 28, 0.58);
+    border-top: 1px solid rgba(255, 255, 255, 0.14);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     cursor: grab;
     user-select: none;
 }
@@ -199,7 +419,7 @@ body {
 .window-title {
     font-family: var(--font-mono);
     font-size: 0.8rem;
-    color: var(--muted);
+    color: rgba(242, 242, 247, 0.62);
     flex: 1;
     text-align: center;
 }
@@ -212,111 +432,7 @@ body {
     margin: 0 auto;
 }
 
-/* ── Taskbar / Dock ── */
-.taskbar {
-    z-index: 2;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 1.25rem;
-    height: 3.5rem;
-    background: var(--taskbar);
-    backdrop-filter: blur(20px);
-    border-top: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-.taskbar-start {
-    font-family: var(--font-mono);
-    font-size: 0.8rem;
-    color: var(--muted);
-    padding: 0.4rem 0.8rem;
-    border-radius: 8px;
-    border: 1px solid var(--border);
-    background: transparent;
-    cursor: pointer;
-    color: var(--text);
-    transition:
-        border-color 0.2s,
-        background 0.2s;
-}
-
-.taskbar-start:hover {
-    border-color: var(--border-hover);
-    background: rgba(255, 255, 255, 0.05);
-}
-
-.taskbar-apps {
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-}
-
-.taskbar-app {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 3px;
-    width: 48px;
-    height: 42px;
-    border-radius: 10px;
-    border: none;
-    background: transparent;
-    cursor: pointer;
-    color: var(--muted);
-    transition:
-        background 0.15s,
-        color 0.15s,
-        transform 0.15s;
-    position: relative;
-}
-
-.taskbar-app:hover {
-    background: rgba(255, 255, 255, 0.07);
-    color: var(--text);
-    transform: translateY(-2px);
-}
-
-.taskbar-app svg {
-    width: 20px;
-    height: 20px;
-    stroke: currentColor;
-}
-
-.taskbar-app-dot {
-    width: 4px;
-    height: 4px;
-    border-radius: 50%;
-    background: var(--accent);
-    opacity: 0;
-    transition: opacity 0.2s;
-    box-shadow: 0 0 6px var(--accent-glow);
-}
-
-.taskbar-app.active .taskbar-app-dot {
-    opacity: 1;
-}
-
-.taskbar-app.focused {
-    color: var(--text);
-    background: rgba(255, 255, 255, 0.12);
-    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16);
-}
-
-.taskbar-app.focused .taskbar-app-dot {
-    opacity: 1;
-    background: var(--text);
-    box-shadow: 0 0 6px rgba(255, 255, 255, 0.4);
-}
-
-.system-tray {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    font-family: var(--font-mono);
-    font-size: 0.78rem;
-    color: var(--muted);
-}
+/* ── Legacy taskbar (unused) ── */
 
 /* ── App content ── */
 .app-label {
@@ -1096,8 +1212,9 @@ body {
 /* ── Start Menu ── */
 .start-menu {
     position: fixed;
-    bottom: 4rem;
-    left: 1rem;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -46%) scale(0.97);
     width: 360px;
     background: rgba(22, 22, 24, 0.94);
     backdrop-filter: blur(40px) saturate(1.5);
@@ -1112,14 +1229,13 @@ body {
     gap: 1.25rem;
     z-index: 100;
     opacity: 0;
-    transform: translateY(12px) scale(0.97);
     pointer-events: none;
     transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
 .start-menu.open {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: translate(-50%, -50%) scale(1);
     pointer-events: auto;
 }
 
@@ -1398,7 +1514,9 @@ body {
     display: flex;
     flex-direction: column;
     height: 100%;
-    background: #060a10;
+    background:
+        radial-gradient(circle at 20% 0%, rgba(30, 40, 58, 0.26), transparent 46%),
+        linear-gradient(180deg, #04070d 0%, #050a12 100%);
     padding: 1rem;
     font-family: var(--font-mono);
     font-size: 0.82rem;
@@ -1420,7 +1538,8 @@ body {
 .terminal-line {
     line-height: 1.6;
     white-space: pre-wrap;
-    word-break: break-all;
+    word-break: normal;
+    overflow-wrap: anywhere;
 }
 
 .terminal-input-row {
@@ -1428,8 +1547,10 @@ body {
     align-items: center;
     gap: 0.5rem;
     flex-shrink: 0;
-    padding-top: 0.5rem;
-    border-top: 1px solid rgba(255,255,255,0.05);
+    margin-top: 0.35rem;
+    padding-top: 0.6rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
 }
 
 .terminal-prompt {
@@ -1454,6 +1575,33 @@ body {
 .term-muted  { color: #6b7fa3; }
 .term-white  { color: #e2eaff; }
 .term-red    { color: #ff5f57; }
+
+.term-neofetch-art {
+    color: #22d3aa;
+    display: inline-block;
+    width: 22ch;
+    white-space: pre;
+}
+
+.term-neofetch-head {
+    color: #f4f7ff;
+    font-weight: 700;
+}
+
+.term-neofetch-sep {
+    color: #8190ab;
+}
+
+.term-neofetch-key {
+    color: #7f93b4;
+    display: inline-block;
+    width: 7ch;
+}
+
+.term-neofetch-value {
+    color: #e2eaff;
+    font-weight: 600;
+}
 
 .browser-home {
     flex: 1;

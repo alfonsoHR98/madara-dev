@@ -1,0 +1,33 @@
+---
+---
+
+<header class="menubar" id="menubar">
+    <div class="menubar-left">
+        <button class="menubar-logo" id="start-btn" aria-label="Inicio">⌘</button>
+        <span class="menubar-brand">MadaraOS</span>
+    </div>
+    <div class="menubar-right">
+        <span id="menubar-date"></span>
+        <span id="menubar-time"></span>
+    </div>
+</header>
+
+<script>
+    function updateMenubarClock() {
+        const dateEl = document.getElementById("menubar-date");
+        const timeEl = document.getElementById("menubar-time");
+        if (!dateEl || !timeEl) return;
+        const now = new Date();
+        dateEl.textContent = now.toLocaleDateString("es-MX", {
+            weekday: "short",
+            day: "numeric",
+            month: "short",
+        });
+        timeEl.textContent = now.toLocaleTimeString("es-MX", {
+            hour: "2-digit",
+            minute: "2-digit",
+        });
+    }
+    updateMenubarClock();
+    setInterval(updateMenubarClock, 1000);
+</script>

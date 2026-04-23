@@ -2,6 +2,7 @@
 import OSLayout from "../layouts/OSLayout.astro";
 import Desktop from "../components/shell/Desktop.astro";
 import Taskbar from "../components/shell/Taskbar.astro";
+import Menubar from "../components/shell/Menubar.astro";
 import WindowFrame from "../components/windows/WindowFrame.astro";
 import AboutApp from "../components/apps/AboutApp.tsx";
 import ProjectsApp from "../components/apps/ProjectsApp.astro";
@@ -14,6 +15,7 @@ import StartMenu from "../components/shell/StartMenu.astro";
 
 <OSLayout title="Madara Os">
     <Wallpaper />
+    <Menubar />
     <Desktop>
         <DesktopIcons />
         <WindowFrame title="Sobre mí" id="window-about">
@@ -35,40 +37,85 @@ import StartMenu from "../components/shell/StartMenu.astro";
 
     <script>
         const windows = document.querySelectorAll<HTMLElement>(".window");
-        const taskbarRunning = document.getElementById("taskbar-running");
+        const dock = document.getElementById("dock");
 
         let topZ = 10;
 
-        const APP_META: Record<string, { label: string; icon: string }> = {
+        const APP_META: Record<string, { label: string; icon: string; bg: string }> = {
             "window-about": {
                 label: "Sobre mí",
-                icon: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`,
+                bg: "linear-gradient(145deg,#5e5ce6,#3a38b0)",
+                icon: `<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`,
             },
             "window-projects": {
                 label: "Proyectos",
-                icon: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>`,
+                bg: "linear-gradient(145deg,#30d158,#1a8f38)",
+                icon: `<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>`,
             },
             "window-contact": {
                 label: "Contacto",
-                icon: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>`,
+                bg: "linear-gradient(145deg,#0a84ff,#0060cc)",
+                icon: `<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>`,
             },
             "window-terminal": {
                 label: "Terminal",
-                icon: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>`,
+                bg: "linear-gradient(145deg,#1c1c1e,#2c2c2e)",
+                icon: `<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>`,
             },
         };
 
         windows.forEach((w, i) => {
-            w.style.top = `${2 + i * 2}rem`;
-            w.style.left = `${2 + i * 2}rem`;
+            w.style.top = `${3 + i * 2}rem`;
+            w.style.left = `${3 + i * 2}rem`;
         });
 
+        const PINNED_APPS = ["window-terminal"];
+
+        // Dock inicial: apps pineadas + terminal abierta
+        PINNED_APPS.forEach(addToDock);
+        activate("window-terminal");
+
+        // ── Dock item management ──
+        function addToDock(id: string) {
+            if (document.getElementById(`dock-${id}`)) return;
+            const meta = APP_META[id];
+            if (!meta) return;
+
+            const btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "dock-item";
+            btn.id = `dock-${id}`;
+            btn.dataset.target = id;
+            btn.dataset.label = meta.label;
+            btn.innerHTML = `
+                <div class="dock-icon" style="background:${meta.bg}">${meta.icon}</div>
+            `;
+            btn.addEventListener("click", () => activate(id));
+            dock?.appendChild(btn);
+        }
+
+        function removeFromDock(id: string) {
+            if (PINNED_APPS.includes(id)) return;
+            document.getElementById(`dock-${id}`)?.remove();
+        }
+
+        function syncDockState(focusedId?: string) {
+            document.querySelectorAll<HTMLElement>(".dock-item").forEach(btn => {
+                const targetId = btn.dataset.target;
+                if (!targetId) return;
+                const win = document.getElementById(targetId);
+                btn.classList.toggle("active", !!win?.classList.contains("active"));
+                btn.classList.toggle("focused", !!focusedId && focusedId === targetId);
+            });
+        }
+
+        function getDockBtn(targetId: string) {
+            return document.querySelector<HTMLElement>(`#dock [data-target="${targetId}"]`);
+        }
+
+        // ── Focus state ──
         function setFocused(targetId: string) {
-            document.querySelectorAll<HTMLElement>(".taskbar-app").forEach(b => b.classList.remove("focused"));
-            const btn = document.querySelector<HTMLElement>(
-                `.taskbar-pinned [data-target="${targetId}"], #taskbar-running [data-target="${targetId}"]`
-            );
-            btn?.classList.add("focused");
+            syncDockState(targetId);
         }
 
         function bringToFront(win: HTMLElement) {
@@ -77,37 +124,9 @@ import StartMenu from "../components/shell/StartMenu.astro";
             setFocused(win.id);
         }
 
-        const PINNED = ["window-terminal"];
-
-        function addToTaskbar(id: string) {
-            if (PINNED.includes(id)) return;
-            if (document.getElementById(`tb-${id}`)) return;
-            const meta = APP_META[id];
-            if (!meta) return;
-
-            const btn = document.createElement("button");
-            btn.type = "button";
-            btn.className = "taskbar-app active";
-            btn.id = `tb-${id}`;
-            btn.dataset.target = id;
-            btn.title = meta.label;
-            btn.innerHTML = `${meta.icon}<span class="taskbar-app-dot"></span>`;
-            btn.addEventListener("click", () => activate(id));
-            taskbarRunning?.appendChild(btn);
-        }
-
-        function removeFromTaskbar(id: string) {
-            document.getElementById(`tb-${id}`)?.remove();
-        }
-
-        function getAnyTaskbarBtn(targetId: string) {
-            return document.querySelector<HTMLElement>(
-                `.taskbar-pinned [data-target="${targetId}"], #taskbar-running [data-target="${targetId}"]`
-            );
-        }
-
+        // ── Minimize ──
         function minimizeWindow(win: HTMLElement) {
-            const btn = getAnyTaskbarBtn(win.id);
+            const btn = getDockBtn(win.id);
             if (!btn) return;
 
             const btnRect = btn.getBoundingClientRect();
@@ -115,21 +134,22 @@ import StartMenu from "../components/shell/StartMenu.astro";
             const dx = btnRect.left + btnRect.width / 2 - (winRect.left + winRect.width / 2);
             const dy = btnRect.top + btnRect.height / 2 - (winRect.top + winRect.height / 2);
 
-            win.style.transition = "transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.35s ease";
-            win.style.transform = `translate(${dx}px, ${dy}px) scale(0.15)`;
+            win.style.transition = "transform 0.35s cubic-bezier(0.4,0,0.2,1), opacity 0.35s ease";
+            win.style.transform = `translate(${dx}px,${dy}px) scale(0.12)`;
             win.style.opacity = "0";
             win.style.pointerEvents = "none";
 
-            document.getElementById(`tb-${win.id}`)?.classList.remove("active");
-            document.querySelector<HTMLElement>(`.taskbar-pinned [data-target="${win.id}"]`)?.classList.remove("active");
+            btn.classList.remove("focused");
 
             setTimeout(() => {
                 win.classList.remove("active");
                 win.style.transform = "";
                 win.style.transition = "";
+                syncDockState();
             }, 350);
         }
 
+        // ── Activate ──
         function activate(targetId: string) {
             const target = document.getElementById(targetId) as HTMLElement;
             if (!target) return;
@@ -143,41 +163,25 @@ import StartMenu from "../components/shell/StartMenu.astro";
             target.style.opacity = "1";
             target.style.pointerEvents = "auto";
             bringToFront(target);
-            addToTaskbar(targetId);
-
-            document.querySelectorAll<HTMLElement>(".taskbar-running .taskbar-app").forEach(b => {
-                b.classList.toggle("active", b.dataset.target === targetId);
-            });
-
-            const pinnedBtn = document.querySelector<HTMLElement>(`.taskbar-pinned [data-target="${targetId}"]`);
-            if (pinnedBtn) {
-                document.querySelectorAll<HTMLElement>(".taskbar-pinned .taskbar-app").forEach(b => b.classList.remove("active"));
-                pinnedBtn.classList.add("active");
-            }
+            addToDock(targetId);
+            syncDockState(targetId);
         }
 
-        // Taskbar pinned
-        document.querySelectorAll<HTMLButtonElement>(".taskbar-pinned [data-target]").forEach(btn => {
-            btn.addEventListener("click", () => {
-                if (btn.dataset.target) activate(btn.dataset.target);
-            });
-        });
-
-        // Desktop icons
+        // ── Desktop icons ──
         document.querySelectorAll<HTMLButtonElement>(".desktop-icon[data-target]").forEach(icon => {
             icon.addEventListener("click", () => {
                 if (icon.dataset.target) activate(icon.dataset.target);
             });
         });
 
-        // About app buttons
+        // ── About app action buttons ──
         document.querySelectorAll<HTMLButtonElement>(".app-actions button[data-target]").forEach(btn => {
             btn.addEventListener("click", () => {
                 if (btn.dataset.target) activate(btn.dataset.target);
             });
         });
 
-        // Start menu apps
+        // ── Start menu apps ──
         document.querySelectorAll<HTMLButtonElement>(".start-app-item[data-target]").forEach(btn => {
             btn.addEventListener("click", () => {
                 if (btn.dataset.target) activate(btn.dataset.target);
@@ -185,7 +189,7 @@ import StartMenu from "../components/shell/StartMenu.astro";
             });
         });
 
-        // Start menu toggle
+        // ── Start menu toggle ──
         const startBtn = document.getElementById("start-btn");
         const startMenu = document.getElementById("start-menu");
         startBtn?.addEventListener("click", (e) => {
@@ -198,7 +202,33 @@ import StartMenu from "../components/shell/StartMenu.astro";
             }
         });
 
-        // Window controls + drag
+        // ── Dock: gaussian wave magnification ──
+        const DOCK_MAX_BOOST = 0.6;   // max extra scale = 1.6x
+        const DOCK_SIGMA = 65;        // width of the gaussian bell curve
+
+        dock?.addEventListener("mousemove", (e: MouseEvent) => {
+            const items = dock.querySelectorAll<HTMLElement>(".dock-item");
+            items.forEach(item => {
+                const icon = item.querySelector<HTMLElement>(".dock-icon");
+                if (!icon) return;
+                const rect = icon.getBoundingClientRect();
+                const center = rect.left + rect.width / 2;
+                const dist = Math.abs(e.clientX - center);
+                const scale = 1 + DOCK_MAX_BOOST * Math.exp(-(dist * dist) / (2 * DOCK_SIGMA * DOCK_SIGMA));
+                item.style.setProperty("--dock-scale", scale.toFixed(4));
+            });
+        });
+
+        dock?.addEventListener("mouseleave", () => {
+            dock?.querySelectorAll<HTMLElement>(".dock-item").forEach(item => {
+                item.style.setProperty("--dock-scale", "1");
+            });
+        });
+
+        // Dock siempre visible (estilo macOS)
+        dock?.classList.add("dock-visible");
+
+        // ── Window controls + drag ──
         windows.forEach((win) => {
             const closeBtn = win.querySelector<HTMLElement>('[aria-label="Cerrar"]');
             const minimizeBtn = win.querySelector<HTMLElement>('[aria-label="Minimizar"]');
@@ -211,11 +241,17 @@ import StartMenu from "../components/shell/StartMenu.astro";
             let startX = 0, startY = 0, startLeft = 0, startTop = 0;
 
             closeBtn?.addEventListener("click", () => {
-                win.classList.remove("active");
+                win.style.transition = "opacity 0.2s ease, transform 0.2s ease";
                 win.style.opacity = "0";
-                win.style.pointerEvents = "none";
-                removeFromTaskbar(win.id);
-                document.querySelector<HTMLElement>(`.taskbar-pinned [data-target="${win.id}"]`)?.classList.remove("active");
+                win.style.transform = "scale(0.95)";
+                setTimeout(() => {
+                    win.classList.remove("active");
+                    win.style.transform = "";
+                    win.style.transition = "";
+                    win.style.pointerEvents = "none";
+                    removeFromDock(win.id);
+                    syncDockState();
+                }, 200);
             });
 
             minimizeBtn?.addEventListener("click", () => minimizeWindow(win));
@@ -224,15 +260,15 @@ import StartMenu from "../components/shell/StartMenu.astro";
                 if (!maximized) {
                     prevStyles = { top: win.style.top, left: win.style.left, width: win.style.width, height: win.style.height };
                     win.style.transition = "top 0.25s ease, left 0.25s ease, width 0.25s ease, height 0.25s ease";
-                    win.style.top = "0";
+                    win.style.top = "1.75rem";
                     win.style.left = "0";
                     win.style.width = "100%";
-                    win.style.height = "calc(100vh - 3.5rem)";
+                    win.style.height = "calc(100vh - 1.75rem)";
                     win.style.borderRadius = "0";
                     maximized = true;
                 } else {
-                    win.style.top = prevStyles.top || "2rem";
-                    win.style.left = prevStyles.left || "2rem";
+                    win.style.top = prevStyles.top || "3rem";
+                    win.style.left = prevStyles.left || "3rem";
                     win.style.width = "";
                     win.style.height = "";
                     win.style.borderRadius = "";
@@ -254,8 +290,9 @@ import StartMenu from "../components/shell/StartMenu.astro";
 
             document.addEventListener("mousemove", (e) => {
                 if (!dragging) return;
+                const newTop = startTop + (e.clientY - startY);
                 win.style.left = `${startLeft + (e.clientX - startX)}px`;
-                win.style.top = `${startTop + (e.clientY - startY)}px`;
+                win.style.top = `${Math.max(1.75 * 16, newTop)}px`;
             });
 
             document.addEventListener("mouseup", () => { dragging = false; });
