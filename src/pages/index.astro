@@ -6,10 +6,15 @@ import WindowFrame from "../components/windows/WindowFrame.astro";
 import AboutApp from "../components/apps/AboutApp.astro";
 import ProjectsApp from "../components/apps/ProjectsApp.astro";
 import ContactApp from "../components/apps/ContactApp.astro";
+import DesktopIcons from "../components/shell/DesktopIcons.astro";
+import Wallpaper from "../components/shell/Wallpaper.astro";
+import StartMenu from "../components/shell/StartMenu.astro";
 ---
 
 <OSLayout title="Madara Os">
+    <Wallpaper />
     <Desktop>
+        <DesktopIcons />
         <WindowFrame title="Sobre mí" id="window-about">
             <AboutApp />
         </WindowFrame>
@@ -21,11 +26,15 @@ import ContactApp from "../components/apps/ContactApp.astro";
         </WindowFrame>
     </Desktop>
 
+    <StartMenu />
     <Taskbar />
 
     <script>
         const buttons = document.querySelectorAll<HTMLButtonElement>(
             ".taskbar-app[data-target]",
+        );
+        const desktopIcons = document.querySelectorAll<HTMLButtonElement>(
+            ".desktop-icon[data-target]",
         );
         const windows = document.querySelectorAll<HTMLElement>(".window");
 
@@ -48,20 +57,16 @@ import ContactApp from "../components/apps/ContactApp.astro";
         }
 
         function minimizeWindow(win: HTMLElement) {
-            const id = win.id;
-            const btn = getTaskbarBtn(id);
+            const btn = getTaskbarBtn(win.id);
             if (!btn) return;
 
             const btnRect = btn.getBoundingClientRect();
             const winRect = win.getBoundingClientRect();
-
             const dx =
-                btnRect.left +
-                btnRect.width / 2 -
+                btnRect.left + btnRect.width / 2 -
                 (winRect.left + winRect.width / 2);
             const dy =
-                btnRect.top +
-                btnRect.height / 2 -
+                btnRect.top + btnRect.height / 2 -
                 (winRect.top + winRect.height / 2);
 
             win.style.transition =
@@ -69,7 +74,6 @@ import ContactApp from "../components/apps/ContactApp.astro";
             win.style.transform = `translate(${dx}px, ${dy}px) scale(0.15)`;
             win.style.opacity = "0";
             win.style.pointerEvents = "none";
-
             btn.classList.remove("active");
 
             setTimeout(() => {
@@ -83,14 +87,11 @@ import ContactApp from "../components/apps/ContactApp.astro";
             const target = document.getElementById(targetId) as HTMLElement;
             if (!target) return;
 
-            const isActive = target.classList.contains("active");
-
-            if (isActive) {
+            if (target.classList.contains("active")) {
                 minimizeWindow(target);
                 return;
             }
 
-            buttons.forEach((b) => b.classList.remove("active"));
             target.classList.add("active");
             target.style.opacity = "1";
             target.style.pointerEvents = "auto";
@@ -101,46 +102,97 @@ import ContactApp from "../components/apps/ContactApp.astro";
             });
         }
 
-        activate("window-about");
-
         buttons.forEach((btn) => {
             btn.addEventListener("click", () => {
                 if (btn.dataset.target) activate(btn.dataset.target);
             });
         });
 
-        // Botón cerrar
+        // Start Menu
+        const startBtn = document.getElementById("start-btn");
+        const startMenu = document.getElementById("start-menu");
+
+        startBtn?.addEventListener("click", (e) => {
+            e.stopPropagation();
+            startMenu?.classList.toggle("open");
+        });
+
+        document.addEventListener("click", (e) => {
+            if (!startMenu?.contains(e.target as Node)) {
+                startMenu?.classList.remove("open");
+            }
+        });
+
+        const startAppBtns = document.querySelectorAll<HTMLButtonElement>(".start-app-item[data-target]");
+        startAppBtns.forEach(btn => {
+            btn.addEventListener("click", () => {
+                if (btn.dataset.target) activate(btn.dataset.target);
+                startMenu?.classList.remove("open");
+            });
+        });
+
+        desktopIcons.forEach((icon) => {
+            icon.addEventListener("click", () => {
+                if (icon.dataset.target) activate(icon.dataset.target);
+            });
+        });
+
+        const aboutBtns = document.querySelectorAll<HTMLButtonElement>(".app-actions button[data-target]");
+        aboutBtns.forEach(btn => {
+            btn.addEventListener("click", () => {
+                if (btn.dataset.target) activate(btn.dataset.target);
+            });
+        });
+
         windows.forEach((win) => {
-            const closeBtn = win.querySelector<HTMLElement>(
-                '[aria-label="Cerrar"]',
-            );
-            const minimizeBtn = win.querySelector<HTMLElement>(
-                '[aria-label="Minimizar"]',
-            );
+            const closeBtn = win.querySelector<HTMLElement>('[aria-label="Cerrar"]');
+            const minimizeBtn = win.querySelector<HTMLElement>('[aria-label="Minimizar"]');
+            const maximizeBtn = win.querySelector<HTMLElement>('[aria-label="Maximizar"]');
+            const titlebar = win.querySelector<HTMLElement>(".window-titlebar");
+
+            let maximized = false;
+            let prevStyles = { top: "", left: "", width: "", height: "" };
+            let dragging = false;
+            let startX = 0, startY = 0, startLeft = 0, startTop = 0;
 
             closeBtn?.addEventListener("click", () => {
                 win.classList.remove("active");
                 win.style.opacity = "0";
                 win.style.pointerEvents = "none";
-                const id = win.id;
-                getTaskbarBtn(id)?.classList.remove("active");
+                getTaskbarBtn(win.id)?.classList.remove("active");
             });
 
-            minimizeBtn?.addEventListener("click", () => {
-                minimizeWindow(win);
+            minimizeBtn?.addEventListener("click", () => minimizeWindow(win));
+
+            maximizeBtn?.addEventListener("click", () => {
+                if (!maximized) {
+                    prevStyles = {
+                        top: win.style.top,
+                        left: win.style.left,
+                        width: win.style.width,
+                        height: win.style.height,
+                    };
+                    win.style.transition =
+                        "top 0.25s ease, left 0.25s ease, width 0.25s ease, height 0.25s ease";
+                    win.style.top = "0";
+                    win.style.left = "0";
+                    win.style.width = "100%";
+                    win.style.height = "calc(100vh - 3.5rem)";
+                    win.style.borderRadius = "0";
+                    maximized = true;
+                } else {
+                    win.style.top = prevStyles.top || "2rem";
+                    win.style.left = prevStyles.left || "2rem";
+                    win.style.width = "";
+                    win.style.height = "";
+                    win.style.borderRadius = "";
+                    maximized = false;
+                    setTimeout(() => { win.style.transition = ""; }, 250);
+                }
             });
 
-            // Drag
-            const titlebar = win.querySelector<HTMLElement>(".window-titlebar");
-            if (!titlebar) return;
-
-            let dragging = false;
-            let startX = 0,
-                startY = 0,
-                startLeft = 0,
-                startTop = 0;
-
-            titlebar.addEventListener("mousedown", (e) => {
+            titlebar?.addEventListener("mousedown", (e) => {
+                if (maximized) return;
                 dragging = true;
                 startX = e.clientX;
                 startY = e.clientY;
@@ -156,9 +208,7 @@ import ContactApp from "../components/apps/ContactApp.astro";
                 win.style.top = `${startTop + (e.clientY - startY)}px`;
             });
 
-            document.addEventListener("mouseup", () => {
-                dragging = false;
-            });
+            document.addEventListener("mouseup", () => { dragging = false; });
 
             win.addEventListener("mousedown", () => bringToFront(win));
         });

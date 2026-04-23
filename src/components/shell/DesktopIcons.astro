@@ -1,0 +1,18 @@
+---
+import { User, FolderKanban, Mail } from "@lucide/astro";
+
+const icons = [
+    { id: "window-about",    label: "Sobre mí",  Icon: User },
+    { id: "window-projects", label: "Proyectos", Icon: FolderKanban },
+    { id: "window-contact",  label: "Contacto",  Icon: Mail },
+];
+---
+
+<div class="desktop-icons">
+    {icons.map(({ id, label, Icon }) => (
+        <button class="desktop-icon" data-target={id} type="button">
+            <Icon size={36} />
+            <span>{label}</span>
+        </button>
+    ))}
+</div>

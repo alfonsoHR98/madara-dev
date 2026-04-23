@@ -1,13 +1,50 @@
+---
+const skills = [
+    { label: "TypeScript", color: "#3178c6" },
+    { label: "JavaScript", color: "#f7df1e" },
+    { label: "Astro", color: "#ff5d01" },
+    { label: "Next.js", color: "#ffffff" },
+    { label: "PostgreSQL", color: "#4169e1" },
+    { label: "Supabase", color: "#3ecf8e" },
+    { label: "MongoDB", color: "#47a248" },
+    { label: "MySQL", color: "#4479a1" },
+    { label: "AWS", color: "#ff9900" },
+    { label: "Google Cloud", color: "#4285f4" },
+    { label: "n8n", color: "#ea4b71" },
+    { label: "Automatizaciones", color: "#8b5cf6" },
+];
+---
+
 <section class="app-panel">
-    <p class="app-label">Perfil</p>
-    <h1>Madara Dev</h1>
-    <p>
-        Desarrollo experiencias web con estética inspirada en sistemas
-        operativos, interfaces inmersivas y foco en frontend.
-    </p>
+    <div class="about-header">
+        <div class="about-avatar">
+            <!-- Cuando tengas foto: reemplaza el div.avatar-initials por <img src="/foto.jpg" alt="Alfonso Hernández" /> -->
+            <div class="avatar-initials">AH</div>
+        </div>
+        <div class="about-intro">
+            <p class="app-label">Perfil</p>
+            <h1>Alfonso Hernández</h1>
+            <p class="about-alias">@madara · Full Stack Developer</p>
+            <p class="about-bio">
+                Desarrollo experiencias web con estética inspirada en sistemas
+                operativos, interfaces inmersivas y foco en frontend.
+            </p>
+        </div>
+    </div>
+
+    <div class="about-skills">
+        <p class="skills-label">Stack</p>
+        <div class="skills-grid">
+            {skills.map(s => (
+                <span class="skill-tag" style={`--skill-color: ${s.color}`}>
+                    {s.label}
+                </span>
+            ))}
+        </div>
+    </div>
 
     <div class="app-actions">
-        <a href="#projects">Ver proyectos</a>
-        <a href="#contact">Contacto</a>
+        <button type="button" data-target="window-projects">Ver proyectos</button>
+        <button type="button" data-target="window-contact">Contacto</button>
     </div>
 </section>

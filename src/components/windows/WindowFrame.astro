@@ -3,21 +3,18 @@ interface Props {
     title: string;
     id: string;
 }
-
 const { title, id } = Astro.props;
 ---
 
 <article class="window" id={id} aria-label={title}>
     <header class="window-titlebar">
-        <div class="window-title">{title}</div>
-
-        <div class="window-controls" aria-label="Controles de ventana">
-            <button type="button" aria-label="Minimizar">—</button>
-            <button type="button" aria-label="Maximizar">□</button>
-            <button type="button" aria-label="Cerrar">×</button>
+        <div class="window-controls">
+            <button type="button" class="btn-close" aria-label="Cerrar"></button>
+            <button type="button" class="btn-minimize" aria-label="Minimizar"></button>
+            <button type="button" class="btn-maximize" aria-label="Maximizar"></button>
         </div>
+        <div class="window-title">{title}</div>
     </header>
-
     <div class="window-content">
         <slot />
     </div>

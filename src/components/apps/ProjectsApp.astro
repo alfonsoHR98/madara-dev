@@ -1,39 +1,81 @@
 ---
 const projects = [
     {
-        title: "Nombre del proyecto",
-        description: "Descripcion corta",
-        stack: ["Astro", "Typescript", "CSS"],
-        url: "https://madara.dev",
-        repo: "https://github.com",
-        image: "/projects/preview.png", //opcional
+        title: "MadaraOS Portfolio",
+        description: "Portafolio personal con estética de sistema operativo. Ventanas arrastrables, animaciones fluidas, partículas interactivas y una experiencia inmersiva que rompe con los portafolios tradicionales.",
+        stack: ["Astro", "TypeScript", "CSS", "Canvas API"],
+        url: "#",
+        repo: "#",
+        featured: true,
+        color: "#4f9eff",
+    },
+    {
+        title: "Workflow Automator",
+        description: "Sistema de automatización de flujos empresariales con integración a servicios externos vía n8n y webhooks.",
+        stack: ["n8n", "Node.js", "PostgreSQL"],
+        url: "#",
+        repo: "#",
+        featured: false,
+        color: "#ea4b71",
+    },
+    {
+        title: "Dashboard Analytics",
+        description: "Panel de métricas en tiempo real con gráficas interactivas y autenticación basada en roles.",
+        stack: ["Next.js", "Supabase", "TypeScript"],
+        url: "#",
+        repo: "#",
+        featured: false,
+        color: "#3ecf8e",
+    },
+    {
+        title: "E-commerce API",
+        description: "API REST escalable para tienda en línea con pagos, inventario y panel de administración.",
+        stack: ["Node.js", "MySQL", "AWS"],
+        url: "#",
+        repo: "#",
+        featured: false,
+        color: "#ff9900",
     },
 ];
+
+const featured = projects.find(p => p.featured);
+const rest = projects.filter(p => !p.featured);
 ---
 
 <section class="projects-panel">
     <p class="app-label">Proyectos</p>
     <h1>Mi trabajo</h1>
 
+    {featured && (
+        <article class="project-card project-featured" style={`--card-color: ${featured.color}`}>
+            <div class="featured-badge">Destacado</div>
+            <h2>{featured.title}</h2>
+            <p>{featured.description}</p>
+            <div class="project-stack">
+                {featured.stack.map(s => <span class="tag">{s}</span>)}
+            </div>
+            <div class="project-links">
+                <a href={featured.url}>Ver sitio</a>
+                <a href={featured.repo}>GitHub</a>
+            </div>
+        </article>
+    )}
+
     <div class="projects-grid">
-        {
-            projects.map((p) => (
-                <article class="project-card">
-                    <div class="project-info">
-                        <h2>{p.title}</h2>
-                        <p>{p.description}</p>
-                        <div class="project-stack">
-                            {p.stack.map((s) => (
-                                <span class="tag">{s}</span>
-                            ))}
-                        </div>
+        {rest.map(p => (
+            <article class="project-card" style={`--card-color: ${p.color}`}>
+                <div class="project-info">
+                    <h2>{p.title}</h2>
+                    <p>{p.description}</p>
+                    <div class="project-stack">
+                        {p.stack.map(s => <span class="tag">{s}</span>)}
                     </div>
-                    <div class="project-links">
-                        <a href={p.url}>Ver sitio</a>
-                        <a href={p.repo}>GitHub</a>
-                    </div>
-                </article>
-            ))
-        }
+                </div>
+                <div class="project-links">
+                    <a href={p.url}>Ver sitio</a>
+                    <a href={p.repo}>GitHub</a>
+                </div>
+            </article>
+        ))}
     </div>
 </section>

@@ -1,26 +1,31 @@
+---
+import { User, FolderKanban, Mail } from "@lucide/astro";
+---
+
 <footer class="taskbar" aria-label="Barra de tareas">
-    <button class="start-button" type="button" aria-label="Abrir menú inicio">
-        Inicio
+    <button class="taskbar-start" type="button" id="start-btn" aria-label="Inicio">
+        ⌘
     </button>
 
     <nav class="taskbar-apps" aria-label="Aplicaciones abiertas">
-        <button
-            type="button"
-            class="taskbar-app active"
-            data-target="window-about">Sobre mí</button
-        >
-        <button type="button" class="taskbar-app" data-target="window-projects"
-            >Proyectos</button
-        >
-        <button type="button" class="taskbar-app" data-target="window-contact"
-            >Contacto</button
-        >
+        <button type="button" class="taskbar-app" data-target="window-about">
+            <User size={20} />
+            <span class="taskbar-app-dot"></span>
+        </button>
+        <button type="button" class="taskbar-app" data-target="window-projects">
+            <FolderKanban size={20} />
+            <span class="taskbar-app-dot"></span>
+        </button>
+        <button type="button" class="taskbar-app" data-target="window-contact">
+            <Mail size={20} />
+            <span class="taskbar-app-dot"></span>
+        </button>
     </nav>
 
-    <section class="system-tray" aria-label="Área del sistema">
+    <div class="system-tray">
         <span>ES</span>
         <span id="system-clock">00:00</span>
-    </section>
+    </div>
 </footer>
 
 <script>
@@ -32,7 +37,6 @@
         const m = now.getMinutes().toString().padStart(2, "0");
         clock.textContent = `${h}:${m}`;
     }
-
     updateClock();
     setInterval(updateClock, 1000);
 </script>
