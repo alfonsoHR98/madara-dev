@@ -1985,6 +1985,11 @@ body {
     overflow-wrap: anywhere;
 }
 
+.terminal-line--neofetch {
+    white-space: pre;
+    overflow-wrap: normal;
+}
+
 .terminal-input-row {
     display: flex;
     align-items: center;
@@ -2258,7 +2263,16 @@ body {
     }
 
     .term-neofetch-art {
-        width: auto;
+        display: none;
+    }
+
+    .terminal-line--neofetch {
+        white-space: normal;
+        line-height: 1.5;
+    }
+
+    .term-neofetch-key {
+        width: 6ch;
     }
 
     .browser-toolbar {

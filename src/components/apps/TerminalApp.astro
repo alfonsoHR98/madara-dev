@@ -9,13 +9,7 @@ const terminalData = {
 ---
 
 <div class="terminal-app">
-    <div class="terminal-output" id="terminal-output" aria-live="polite" aria-label="Salida de terminal">
-        <div class="terminal-line">
-            <span class="term-green">MadaraOS</span> <span class="term-muted">v1.0.0</span>
-        </div>
-        <div class="terminal-line term-muted">Escribe <span class="term-accent">help</span> para ver los comandos disponibles.</div>
-        <div class="terminal-line"> </div>
-    </div>
+    <div class="terminal-output" id="terminal-output" aria-live="polite" aria-label="Salida de terminal"></div>
     <div class="terminal-input-row">
         <span class="terminal-prompt">madara@os:~$</span>
         <input type="text" id="terminal-input" class="terminal-input" aria-label="Comando de terminal" autocomplete="off" spellcheck="false" autofocus />
@@ -33,6 +27,20 @@ const terminalData = {
 
     const history: string[] = [];
     let historyIndex = -1;
+
+    function neofetchLines() {
+        return [
+            '<span class="term-neofetch-art">        .-""""-.</span> <span class="term-neofetch-head">madara@madaraos</span>',
+            '<span class="term-neofetch-art">     .-\'  .--.  \'-.</span> <span class="term-neofetch-sep">─────────────────</span>',
+            '<span class="term-neofetch-art">    /   .\'    \'.   \\</span> <span class="term-neofetch-key">OS:</span>    <span class="term-neofetch-value">MadaraOS v1.0.0</span>',
+            '<span class="term-neofetch-art">   |   /  .--.  \\   |</span> <span class="term-neofetch-key">Shell:</span> <span class="term-neofetch-value">MadaraShell</span>',
+            '<span class="term-neofetch-art">   |  |  ( () )  |  |</span> <span class="term-neofetch-key">Stack:</span> <span class="term-neofetch-value">Astro · TypeScript</span>',
+            '<span class="term-neofetch-art">   |   \\  \'--\'  /   |</span> <span class="term-neofetch-key">Cloud:</span> <span class="term-neofetch-value">Vercel · Resend</span>',
+            '<span class="term-neofetch-art">    \\   \'.____.\'   /</span> <span class="term-neofetch-key">Theme:</span> <span class="term-neofetch-value">Dark Glass</span>',
+            '<span class="term-neofetch-art">     \'-.        .-\'</span> <span class="term-neofetch-key">CPU:</span>   <span class="term-neofetch-value">Full Stack</span>',
+            '<span class="term-neofetch-art">        \'-.__.-\'</span>',
+        ];
+    }
 
     const COMMANDS: Record<string, () => string[]> = {
         help: () => [
@@ -93,18 +101,7 @@ const terminalData = {
                 hour: "2-digit", minute: "2-digit",
             }),
         ],
-        neofetch: () => [
-            '<span class="term-neofetch-art">       .-""""-.</span> <span class="term-neofetch-head">madara@madaraos</span>',
-            '<span class="term-neofetch-art">     .\'  .-.  \'.</span> <span class="term-neofetch-sep">─────────────────</span>',
-            '<span class="term-neofetch-art">    /   /   \\   \\</span> <span class="term-neofetch-key">OS:</span>    <span class="term-neofetch-value">MadaraOS v1.0.0</span>',
-            '<span class="term-neofetch-art">   |   |     |   |</span> <span class="term-neofetch-key">Shell:</span> <span class="term-neofetch-value">MadaraShell</span>',
-            '<span class="term-neofetch-art">   |   |     |   |</span> <span class="term-neofetch-key">Stack:</span> <span class="term-neofetch-value">Astro · TypeScript</span>',
-            '<span class="term-neofetch-art">   |   |  _  |   |</span> <span class="term-neofetch-key">Cloud:</span> <span class="term-neofetch-value">AWS · GCloud</span>',
-            '<span class="term-neofetch-art">   |   | (_) |   |</span> <span class="term-neofetch-key">Theme:</span> <span class="term-neofetch-value">Dark Glass</span>',
-            '<span class="term-neofetch-art">    \\   \\___/   /</span> <span class="term-neofetch-key">CPU:</span>   <span class="term-neofetch-value">Full Stack</span>',
-            '<span class="term-neofetch-art">     \'.       .\'</span>',
-            '<span class="term-neofetch-art">       \'-. .-\'</span>',
-        ],
+        neofetch: neofetchLines,
         clear: () => {
             output.innerHTML = "";
             return [];
@@ -121,7 +118,7 @@ const terminalData = {
 
         for (const line of lines) {
             const row = document.createElement("div");
-            row.className = "terminal-line";
+            row.className = line.includes("term-neofetch-art") ? "terminal-line terminal-line--neofetch" : "terminal-line";
             row.innerHTML = line === "" ? "&nbsp;" : line;
             output.appendChild(row);
         }
@@ -187,6 +184,13 @@ const terminalData = {
             }
         }
     });
+
+    print(neofetchLines());
+    print([
+        '',
+        '<span class="term-muted">Escribe <span class="term-accent">help</span> para ver los comandos disponibles.</span>',
+        '&nbsp;',
+    ]);
 
     // Focus al hacer clic en cualquier parte de la terminal
     document.querySelector(".terminal-app")?.addEventListener("click", () => input.focus());
