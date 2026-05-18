@@ -1663,3 +1663,152 @@ body {
     background: rgba(255, 255, 255, 0.12);
     border-color: rgba(255, 255, 255, 0.25);
 }
+
+@media (max-width: 760px) {
+    .menubar {
+        padding: 0 0.65rem;
+    }
+
+    .menubar-brand {
+        max-width: 34vw;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .menubar-right {
+        gap: 0.35rem;
+        font-size: 0.66rem;
+    }
+
+    .desktop {
+        overflow: hidden;
+        padding-bottom: 6rem;
+    }
+
+    .desktop-icons {
+        top: calc(1.75rem + 1rem);
+        right: auto;
+        left: 0.75rem;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(72px, 1fr));
+        gap: 0.55rem;
+        max-width: calc(100vw - 1.5rem);
+    }
+
+    .desktop-icon {
+        width: 76px;
+        padding: 0.65rem 0.45rem;
+        background: rgba(10, 10, 12, 0.22);
+        border-color: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(12px);
+    }
+
+    .window {
+        top: 1.75rem !important;
+        left: 0 !important;
+        width: 100vw !important;
+        height: calc(100dvh - 5.9rem) !important;
+        min-height: 0;
+        border-right: 0;
+        border-left: 0;
+        border-radius: 0;
+    }
+
+    .window-titlebar {
+        padding: 0.7rem 0.85rem;
+    }
+
+    .window-content {
+        padding: 1.1rem;
+        max-height: calc(100% - 2.75rem);
+    }
+
+    #window-about,
+    #window-terminal {
+        height: calc(100dvh - 5.9rem) !important;
+    }
+
+    .dock {
+        --dock-icon-size: 46px;
+        bottom: 0.65rem;
+        width: calc(100vw - 1rem);
+        max-width: 420px;
+        height: 64px;
+        justify-content: center;
+        gap: 8px;
+        padding: 7px 10px;
+        overflow-x: auto;
+        scrollbar-width: none;
+    }
+
+    .dock::-webkit-scrollbar {
+        display: none;
+    }
+
+    .dock-item::before {
+        display: none;
+    }
+
+    .start-menu {
+        width: calc(100vw - 1rem);
+        max-width: 380px;
+        padding: 1rem;
+        top: auto;
+        bottom: 5.1rem;
+        transform: translate(-50%, 8px) scale(0.98);
+    }
+
+    .start-menu.open {
+        transform: translate(-50%, 0) scale(1);
+    }
+
+    .start-apps {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .projects-grid,
+    .resume-projects-grid,
+    .resume-languages-grid,
+    .contact-links {
+        grid-template-columns: 1fr;
+    }
+
+    .terminal-app {
+        font-size: 0.74rem;
+        padding: 0.8rem;
+    }
+
+    .terminal-input-row {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 0.35rem;
+    }
+
+    .terminal-input {
+        width: 100%;
+    }
+
+    .term-neofetch-art {
+        width: auto;
+    }
+
+    .browser-toolbar {
+        flex-wrap: wrap;
+    }
+
+    .browser-url-wrap {
+        min-width: 100%;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+    }
+}
