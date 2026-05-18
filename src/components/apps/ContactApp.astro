@@ -21,7 +21,8 @@ const linkedinHandle = personalInfo.linkedin.replace(/^https?:\/\/linkedin.com\/
     </div>
 
     <div class="contact-grid">
-        <form class="contact-form" data-contact-form data-recipient={personalInfo.email}>
+        <form class="contact-form" data-contact-form>
+            <input class="contact-honeypot" name="company" type="text" tabindex="-1" autocomplete="off" aria-hidden="true" />
             <div class="contact-field-row">
                 <label>
                     <span>Nombre</span>
@@ -48,8 +49,8 @@ const linkedinHandle = personalInfo.linkedin.replace(/^https?:\/\/linkedin.com\/
                 <textarea name="message" rows="5" placeholder="Cuéntame qué quieres construir, tiempos, presupuesto aproximado o links útiles." required></textarea>
             </label>
 
-            <button type="submit">Preparar mensaje</button>
-            <p class="contact-form-note">Por ahora abre tu cliente de correo. Recomendado: conectar Resend cuando despliegues con serverless.</p>
+            <button type="submit" data-contact-submit>Enviar mensaje</button>
+            <p class="contact-form-note" data-contact-status aria-live="polite">Envío seguro desde la página. No abre tu app de correo.</p>
         </form>
 
         <div class="contact-side">
@@ -86,9 +87,9 @@ const linkedinHandle = personalInfo.linkedin.replace(/^https?:\/\/linkedin.com\/
             </a>
 
             <div class="contact-service-note">
-                <span>Recomendación</span>
-                <strong>Resend + dominio verificado</strong>
-                <p>Ideal para formulario profesional si el sitio corre con Vercel/Netlify/adapter serverless.</p>
+                <span>Envío seguro</span>
+                <strong>Resend conectado</strong>
+                <p>Tu mensaje sale desde el formulario y llega directo a mi inbox. Respondo a la dirección que escribas.</p>
             </div>
         </div>
     </div>
@@ -99,13 +100,33 @@ const linkedinHandle = personalInfo.linkedin.replace(/^https?:\/\/linkedin.com\/
         event.preventDefault();
         const form = event.currentTarget;
         const formData = new FormData(form);
-        const recipient = form.dataset.recipient ?? "";
-        const name = String(formData.get("name") ?? "");
-        const email = String(formData.get("email") ?? "");
-        const projectType = String(formData.get("projectType") ?? "");
-        const message = String(formData.get("message") ?? "");
-        const subject = encodeURIComponent(`Nuevo proyecto: ${projectType}`);
-        const body = encodeURIComponent(`Nombre: ${name}\nEmail: ${email}\nTipo: ${projectType}\n\nMensaje:\n${message}`);
-        window.location.href = `mailto:${recipient}?subject=${subject}&body=${body}`;
+        const submit = form.querySelector<HTMLButtonElement>("[data-contact-submit]");
+        const status = form.querySelector<HTMLElement>("[data-contact-status]");
+
+        async function sendMessage() {
+            submit?.setAttribute("disabled", "true");
+            form.dataset.state = "loading";
+            if (status) status.textContent = "Enviando mensaje...";
+
+            const response = await fetch("/api/contact", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(Object.fromEntries(formData)),
+            });
+
+            const result = await response.json().catch(() => ({}));
+            if (!response.ok) throw new Error(result.message || "No se pudo enviar el mensaje.");
+
+            form.reset();
+            form.dataset.state = "success";
+            if (status) status.textContent = "Mensaje enviado. Te respondo pronto.";
+        }
+
+        sendMessage().catch((error) => {
+            form.dataset.state = "error";
+            if (status) status.textContent = error.message;
+        }).finally(() => {
+            submit?.removeAttribute("disabled");
+        });
     });
 </script>

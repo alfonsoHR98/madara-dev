@@ -744,6 +744,10 @@ body {
     padding: 1rem;
 }
 
+.contact-honeypot {
+    display: none;
+}
+
 .contact-field-row {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -810,11 +814,25 @@ body {
     transform: translateY(-2px);
 }
 
+.contact-form button:disabled {
+    cursor: wait;
+    opacity: 0.68;
+    transform: none;
+}
+
 .contact-form-note {
     color: var(--muted);
     font-size: 0.74rem;
     line-height: 1.55;
     margin: 0;
+}
+
+.contact-form[data-state="success"] .contact-form-note {
+    color: #3ecf8e;
+}
+
+.contact-form[data-state="error"] .contact-form-note {
+    color: #ff5f57;
 }
 
 .contact-side {
