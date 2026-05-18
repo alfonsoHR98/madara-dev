@@ -672,10 +672,18 @@ body {
 }
 
 /* ── Contact ── */
+.contact-panel {
+    position: relative;
+}
+
+.contact-hero {
+    margin-bottom: 1.25rem;
+}
+
 .contact-panel h1 {
-    font-size: clamp(1.5rem, 3vw, 2.25rem);
+    font-size: clamp(2rem, 5vw, 3.25rem);
     font-weight: 700;
-    background: linear-gradient(135deg, var(--text) 0%, var(--muted) 100%);
+    background: linear-gradient(135deg, #fff 0%, #dfe8ff 45%, #5ac8fa 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -686,9 +694,133 @@ body {
 .contact-description {
     color: var(--muted);
     line-height: 1.7;
-    max-width: 50ch;
-    margin-bottom: 1.5rem;
-    font-size: 0.9rem;
+    max-width: 62ch;
+    margin-bottom: 0.85rem;
+    font-size: 0.95rem;
+}
+
+.contact-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: #3ecf8e;
+    border: 1px solid rgba(62, 207, 142, 0.22);
+    border-radius: 999px;
+    background: rgba(62, 207, 142, 0.08);
+    padding: 0.32rem 0.7rem;
+}
+
+.contact-status span {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #3ecf8e;
+    box-shadow: 0 0 14px rgba(62, 207, 142, 0.8);
+}
+
+.contact-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(260px, 0.85fr);
+    gap: 1rem;
+    align-items: start;
+}
+
+.contact-form,
+.contact-service-note {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    background:
+        radial-gradient(circle at 14% 0%, rgba(90, 200, 250, 0.13), transparent 34%),
+        rgba(255, 255, 255, 0.035);
+    box-shadow: 0 18px 48px rgba(0, 0, 0, 0.22);
+}
+
+.contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    padding: 1rem;
+}
+
+.contact-field-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+}
+
+.contact-form label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.contact-form label span {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.contact-form input,
+.contact-form select,
+.contact-form textarea {
+    width: 100%;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    background: rgba(5, 8, 14, 0.56);
+    color: var(--text);
+    font: inherit;
+    padding: 0.72rem 0.82rem;
+    outline: none;
+    transition: border-color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
+}
+
+.contact-form textarea {
+    resize: vertical;
+    min-height: 128px;
+}
+
+.contact-form input:focus,
+.contact-form select:focus,
+.contact-form textarea:focus {
+    border-color: rgba(90, 200, 250, 0.72);
+    background: rgba(5, 8, 14, 0.74);
+    box-shadow: 0 0 0 4px rgba(90, 200, 250, 0.1);
+}
+
+.contact-form button {
+    align-self: flex-start;
+    border: 1px solid rgba(255, 255, 255, 0.86);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.92);
+    color: #0f0f10;
+    cursor: pointer;
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    font-weight: 700;
+    padding: 0.72rem 1rem;
+    transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.contact-form button:hover {
+    background: #fff;
+    transform: translateY(-2px);
+}
+
+.contact-form-note {
+    color: var(--muted);
+    font-size: 0.74rem;
+    line-height: 1.55;
+    margin: 0;
+}
+
+.contact-side {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
 }
 
 .contact-links {
@@ -718,6 +850,11 @@ body {
     border-color: rgba(255, 255, 255, 0.18);
     background: rgba(255, 255, 255, 0.04);
     transform: translateX(4px);
+}
+
+.contact-card--primary {
+    border-color: rgba(90, 200, 250, 0.22);
+    background: rgba(90, 200, 250, 0.08);
 }
 
 .contact-icon {
@@ -756,6 +893,33 @@ body {
     font-size: 0.9rem;
     font-weight: 500;
     color: var(--text);
+}
+
+.contact-service-note {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    padding: 1rem;
+}
+
+.contact-service-note span {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: #5ac8fa;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+}
+
+.contact-service-note strong {
+    color: var(--text);
+    font-size: 1rem;
+}
+
+.contact-service-note p {
+    color: var(--muted);
+    font-size: 0.8rem;
+    line-height: 1.6;
+    margin: 0;
 }
 
 /* ── About window size ── */
@@ -2035,6 +2199,8 @@ body {
     .projects-grid,
     .resume-projects-grid,
     .resume-languages-grid,
+    .contact-grid,
+    .contact-field-row,
     .contact-links {
         grid-template-columns: 1fr;
     }
