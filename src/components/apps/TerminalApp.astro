@@ -37,6 +37,8 @@ const terminalData = {
             '  <span class="term-green">skills</span>       — Stack tecnológico',
             '  <span class="term-green">projects</span>     — Mis proyectos',
             '  <span class="term-green">contact</span>      — Cómo contactarme',
+            '  <span class="term-green">apps</span>         — Lista de apps del escritorio',
+            '  <span class="term-green">shortcuts</span>    — Atajos de teclado',
             '  <span class="term-green">open &lt;app&gt;</span>   — Abre una ventana (about, projects, contact, browser)',
             '  <span class="term-green">date</span>         — Fecha y hora actual',
             '  <span class="term-green">neofetch</span>     — Info del sistema',
@@ -63,6 +65,22 @@ const terminalData = {
             `  GitHub   →  <span class="term-green">${personalInfo.github.replace(/^https?:\/\//, "")}</span>`,
             `  Email    →  <span class="term-green">${personalInfo.email}</span>`,
             `  LinkedIn →  <span class="term-green">${personalInfo.linkedin.replace(/^https?:\/\//, "")}</span>`,
+        ],
+        apps: () => [
+            '<span class="term-accent">Apps:</span>',
+            '  about     — Perfil y CV',
+            '  projects  — Proyectos destacados',
+            '  contact   — Formas de contacto',
+            '  browser   — Navegador integrado',
+        ],
+        shortcuts: () => [
+            '<span class="term-accent">Atajos OS:</span>',
+            '  Ctrl/Cmd + K       — Abrir/cerrar inicio',
+            '  Ctrl/Cmd + 1..5    — Abrir app rápida',
+            '  Ctrl/Cmd + M       — Minimizar ventana enfocada',
+            '  Ctrl/Cmd + W       — Cerrar ventana enfocada',
+            '  Ctrl/Cmd + ←/→     — Snap lateral',
+            '  Escape             — Cerrar menú inicio',
         ],
         date: () => [
             new Date().toLocaleString("es-MX", {
@@ -116,13 +134,7 @@ const terminalData = {
         };
         const id = map[arg];
         if (id) {
-            const win = document.getElementById(id) as HTMLElement;
-            if (win) {
-                win.classList.add("active");
-                win.setAttribute("aria-hidden", "false");
-                win.style.opacity = "1";
-                win.style.pointerEvents = "auto";
-            }
+            document.dispatchEvent(new CustomEvent("madara:open-app", { detail: { id } }));
             return [`Abriendo <span class="term-green">${arg}</span>...`];
         }
         return [`<span class="term-red">Error:</span> app desconocida. Opciones: about, projects, contact, browser`];

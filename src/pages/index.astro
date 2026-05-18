@@ -42,8 +42,10 @@ import StartMenu from "../components/shell/StartMenu.astro";
     <script>
         const windows = document.querySelectorAll<HTMLElement>(".window");
         const dock = document.getElementById("dock");
+        const QUICK_APPS = ["window-about", "window-projects", "window-contact", "window-browser", "window-terminal"];
 
         let topZ = 10;
+        let focusedWindowId = "";
 
         const APP_META: Record<string, { label: string; icon: string; bg: string }> = {
             "window-about": {
@@ -125,6 +127,7 @@ import StartMenu from "../components/shell/StartMenu.astro";
 
         // ── Focus state ──
         function setFocused(targetId: string) {
+            focusedWindowId = targetId;
             syncDockState(targetId);
         }
 
@@ -132,6 +135,41 @@ import StartMenu from "../components/shell/StartMenu.astro";
             topZ++;
             win.style.zIndex = String(topZ);
             setFocused(win.id);
+        }
+
+        function getFocusedWindow() {
+            return focusedWindowId ? document.getElementById(focusedWindowId) as HTMLElement | null : null;
+        }
+
+        function closeWindow(win: HTMLElement) {
+            win.style.transition = "opacity 0.2s ease, transform 0.2s ease";
+            win.style.opacity = "0";
+            win.style.transform = "scale(0.95)";
+            setTimeout(() => {
+                win.classList.remove("active");
+                win.setAttribute("aria-hidden", "true");
+                win.style.transform = "";
+                win.style.transition = "";
+                win.style.pointerEvents = "none";
+                removeFromDock(win.id);
+                syncDockState();
+            }, 200);
+        }
+
+        function snapWindow(win: HTMLElement, side: "left" | "right") {
+            win.classList.add("active");
+            win.setAttribute("aria-hidden", "false");
+            win.style.opacity = "1";
+            win.style.pointerEvents = "auto";
+            win.style.transition = "top 0.2s ease, left 0.2s ease, width 0.2s ease, height 0.2s ease";
+            win.style.top = "1.75rem";
+            win.style.left = side === "left" ? "0" : "50%";
+            win.style.width = "50%";
+            win.style.height = "calc(100vh - 1.75rem)";
+            win.style.borderRadius = "0";
+            bringToFront(win);
+            addToDock(win.id);
+            setTimeout(() => { win.style.transition = ""; }, 220);
         }
 
         // ── Minimize ──
@@ -179,6 +217,11 @@ import StartMenu from "../components/shell/StartMenu.astro";
             syncDockState(targetId);
         }
 
+        document.addEventListener("madara:open-app", (event) => {
+            const id = (event as CustomEvent<{ id?: string }>).detail?.id;
+            if (id) activate(id);
+        });
+
         // ── Desktop icons ──
         document.querySelectorAll<HTMLButtonElement>(".desktop-icon[data-target]").forEach(icon => {
             icon.addEventListener("click", () => {
@@ -225,6 +268,41 @@ import StartMenu from "../components/shell/StartMenu.astro";
             if (e.key === "Escape") {
                 closeStartMenu();
             }
+
+            const target = e.target as HTMLElement;
+            const isTyping = ["INPUT", "TEXTAREA"].includes(target.tagName) || target.isContentEditable;
+            const mod = e.metaKey || e.ctrlKey;
+            if (!mod || isTyping) return;
+
+            if (e.key.toLowerCase() === "k") {
+                e.preventDefault();
+                setStartMenuOpen(!startMenu?.classList.contains("open"));
+                return;
+            }
+
+            const quickIndex = Number(e.key) - 1;
+            if (quickIndex >= 0 && quickIndex < QUICK_APPS.length) {
+                e.preventDefault();
+                activate(QUICK_APPS[quickIndex]);
+                return;
+            }
+
+            const focused = getFocusedWindow();
+            if (!focused) return;
+
+            if (e.key.toLowerCase() === "m") {
+                e.preventDefault();
+                minimizeWindow(focused);
+            } else if (e.key.toLowerCase() === "w") {
+                e.preventDefault();
+                closeWindow(focused);
+            } else if (e.key === "ArrowLeft") {
+                e.preventDefault();
+                snapWindow(focused, "left");
+            } else if (e.key === "ArrowRight") {
+                e.preventDefault();
+                snapWindow(focused, "right");
+            }
         });
 
         // ── Dock: gaussian wave magnification ──
@@ -266,18 +344,7 @@ import StartMenu from "../components/shell/StartMenu.astro";
             let startX = 0, startY = 0, startLeft = 0, startTop = 0;
 
             closeBtn?.addEventListener("click", () => {
-                win.style.transition = "opacity 0.2s ease, transform 0.2s ease";
-                win.style.opacity = "0";
-                win.style.transform = "scale(0.95)";
-                setTimeout(() => {
-                    win.classList.remove("active");
-                    win.setAttribute("aria-hidden", "true");
-                    win.style.transform = "";
-                    win.style.transition = "";
-                    win.style.pointerEvents = "none";
-                    removeFromDock(win.id);
-                    syncDockState();
-                }, 200);
+                closeWindow(win);
             });
 
             minimizeBtn?.addEventListener("click", () => minimizeWindow(win));
