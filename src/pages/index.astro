@@ -341,7 +341,10 @@ import StartMenu from "../components/shell/StartMenu.astro";
             let maximized = false;
             let prevStyles = { top: "", left: "", width: "", height: "" };
             let dragging = false;
+            let resizing = false;
             let startX = 0, startY = 0, startLeft = 0, startTop = 0;
+            let startWidth = 0, startHeight = 0;
+            const resizeHandle = win.querySelector<HTMLElement>(".window-resize-handle");
 
             closeBtn?.addEventListener("click", () => {
                 closeWindow(win);
@@ -381,14 +384,37 @@ import StartMenu from "../components/shell/StartMenu.astro";
                 e.preventDefault();
             });
 
-            document.addEventListener("mousemove", (e) => {
-                if (!dragging) return;
-                const newTop = startTop + (e.clientY - startY);
-                win.style.left = `${startLeft + (e.clientX - startX)}px`;
-                win.style.top = `${Math.max(1.75 * 16, newTop)}px`;
+            resizeHandle?.addEventListener("mousedown", (e) => {
+                if (maximized) return;
+                resizing = true;
+                startX = e.clientX;
+                startY = e.clientY;
+                startWidth = win.offsetWidth;
+                startHeight = win.offsetHeight;
+                bringToFront(win);
+                e.preventDefault();
+                e.stopPropagation();
             });
 
-            document.addEventListener("mouseup", () => { dragging = false; });
+            document.addEventListener("mousemove", (e) => {
+                if (dragging) {
+                    const newTop = startTop + (e.clientY - startY);
+                    win.style.left = `${startLeft + (e.clientX - startX)}px`;
+                    win.style.top = `${Math.max(1.75 * 16, newTop)}px`;
+                    return;
+                }
+
+                if (resizing) {
+                    const maxWidth = window.innerWidth - win.offsetLeft - 12;
+                    const maxHeight = window.innerHeight - win.offsetTop - 12;
+                    const nextWidth = Math.min(maxWidth, Math.max(360, startWidth + e.clientX - startX));
+                    const nextHeight = Math.min(maxHeight, Math.max(300, startHeight + e.clientY - startY));
+                    win.style.width = `${nextWidth}px`;
+                    win.style.height = `${nextHeight}px`;
+                }
+            });
+
+            document.addEventListener("mouseup", () => { dragging = false; resizing = false; });
             win.addEventListener("mousedown", () => bringToFront(win));
         });
     </script>
