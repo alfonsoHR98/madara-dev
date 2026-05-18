@@ -8,6 +8,7 @@ import AboutApp from "../components/apps/AboutApp.tsx";
 import ProjectsApp from "../components/apps/ProjectsApp.astro";
 import ContactApp from "../components/apps/ContactApp.astro";
 import TerminalApp from "../components/apps/TerminalApp.astro";
+import BrowserApp from "../components/apps/BrowserApp.astro";
 import DesktopIcons from "../components/shell/DesktopIcons.astro";
 import Wallpaper from "../components/shell/Wallpaper.astro";
 import StartMenu from "../components/shell/StartMenu.astro";
@@ -26,6 +27,9 @@ import StartMenu from "../components/shell/StartMenu.astro";
         </WindowFrame>
         <WindowFrame title="Contacto" id="window-contact">
             <ContactApp />
+        </WindowFrame>
+        <WindowFrame title="Navegador" id="window-browser">
+            <BrowserApp />
         </WindowFrame>
         <WindowFrame title="Terminal" id="window-terminal">
             <TerminalApp />
@@ -56,6 +60,11 @@ import StartMenu from "../components/shell/StartMenu.astro";
                 label: "Contacto",
                 bg: "linear-gradient(145deg,#0a84ff,#0060cc)",
                 icon: `<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>`,
+            },
+            "window-browser": {
+                label: "Navegador",
+                bg: "linear-gradient(145deg,#5ac8fa,#0066d6)",
+                icon: `<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>`,
             },
             "window-terminal": {
                 label: "Terminal",

@@ -1508,6 +1508,18 @@ body {
     height: 520px;
 }
 
+#window-browser {
+    min-height: 0;
+    height: 560px;
+}
+
+#window-browser .window-content {
+    padding: 0;
+    height: calc(100% - 42px);
+    overflow: hidden;
+    max-width: none;
+}
+
 #window-terminal .window-content {
     padding: 0;
     height: calc(100% - 42px);

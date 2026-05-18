@@ -26,7 +26,7 @@
             '  <span class="term-green">skills</span>       — Stack tecnológico',
             '  <span class="term-green">projects</span>     — Mis proyectos',
             '  <span class="term-green">contact</span>      — Cómo contactarme',
-            '  <span class="term-green">open &lt;app&gt;</span>   — Abre una ventana (about, projects, contact)',
+            '  <span class="term-green">open &lt;app&gt;</span>   — Abre una ventana (about, projects, contact, browser)',
             '  <span class="term-green">date</span>         — Fecha y hora actual',
             '  <span class="term-green">neofetch</span>     — Info del sistema',
             '  <span class="term-green">clear</span>        — Limpiar terminal',
@@ -107,6 +107,7 @@
             about: "window-about",
             projects: "window-projects",
             contact: "window-contact",
+            browser: "window-browser",
         };
         const id = map[arg];
         if (id) {
@@ -119,7 +120,7 @@
             }
             return [`Abriendo <span class="term-green">${arg}</span>...`];
         }
-        return [`<span class="term-red">Error:</span> app desconocida. Opciones: about, projects, contact`];
+        return [`<span class="term-red">Error:</span> app desconocida. Opciones: about, projects, contact, browser`];
     }
 
     function run(raw: string) {
