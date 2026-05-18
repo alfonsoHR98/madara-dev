@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Globe, Mail, MapPin, Download, ExternalLink } from "lucide-react";
+import { Mail, MapPin, Download, ExternalLink } from "lucide-react";
 import data from "../../data/resume.json";
 
 function GithubIcon({ size = 14 }: { size?: number }) {
