@@ -1,3 +1,13 @@
+---
+import data from "../../data/resume.json";
+
+const terminalData = {
+    personalInfo: data.personalInfo,
+    projects: data.projects,
+    skills: data.skills,
+};
+---
+
 <div class="terminal-app">
     <div class="terminal-output" id="terminal-output" aria-live="polite" aria-label="Salida de terminal">
         <div class="terminal-line">
@@ -12,9 +22,10 @@
     </div>
 </div>
 
-<script>
+<script define:vars={{ terminalData }}>
     const output = document.getElementById("terminal-output")!;
     const input = document.getElementById("terminal-input") as HTMLInputElement;
+    const { personalInfo, projects, skills } = terminalData;
 
     const history: string[] = [];
     let historyIndex = -1;
@@ -32,32 +43,26 @@
             '  <span class="term-green">clear</span>        — Limpiar terminal',
         ],
         whoami: () => [
-            '<span class="term-accent">Alfonso Hernández</span> <span class="term-muted">(@madara)</span>',
-            'Full Stack Developer',
-            'Especializado en interfaces inmersivas y automatización.',
-            'Ubicación: México 🇲🇽',
+            `<span class="term-accent">${personalInfo.name}</span> <span class="term-muted">(${personalInfo.alias})</span>`,
+            personalInfo.title,
+            personalInfo.summary,
+            `Ubicación: ${personalInfo.location}`,
         ],
         skills: () => [
             '<span class="term-accent">Stack tecnológico:</span>',
-            '  Frontend  →  <span class="term-green">Astro · Next.js · TypeScript · CSS</span>',
-            '  Backend   →  <span class="term-green">Node.js · PostgreSQL · MySQL · MongoDB</span>',
-            '  Cloud     →  <span class="term-green">AWS · Google Cloud · Supabase</span>',
-            '  DevOps    →  <span class="term-green">n8n · Automatizaciones</span>',
+            ...skills.map((group) => `  ${group.category.padEnd(14)} →  <span class="term-green">${group.items.join(" · ")}</span>`),
         ],
         projects: () => [
             '<span class="term-accent">Proyectos:</span>',
-            '  [1] <span class="term-green">MadaraOS Portfolio</span>  — Astro · TypeScript · CSS',
-            '  [2] <span class="term-green">Workflow Automator</span>  — n8n · Node.js · PostgreSQL',
-            '  [3] <span class="term-green">Dashboard Analytics</span> — Next.js · Supabase',
-            '  [4] <span class="term-green">E-commerce API</span>      — Node.js · MySQL · AWS',
+            ...projects.map((project, index) => `  [${index + 1}] <span class="term-green">${project.name}</span> — ${project.tech.join(" · ")}`),
             '',
             'Usa <span class="term-accent">open projects</span> para ver más detalles.',
         ],
         contact: () => [
             '<span class="term-accent">Contacto:</span>',
-            '  GitHub  →  <span class="term-green">github.com/alfonsoHR98</span>',
-            '  Email   →  <span class="term-green">alfonsohr_98@outlook.com</span>',
-            '  LinkedIn → <span class="term-green">linkedin.com/in/tu-usuario</span>',
+            `  GitHub   →  <span class="term-green">${personalInfo.github.replace(/^https?:\/\//, "")}</span>`,
+            `  Email    →  <span class="term-green">${personalInfo.email}</span>`,
+            `  LinkedIn →  <span class="term-green">${personalInfo.linkedin.replace(/^https?:\/\//, "")}</span>`,
         ],
         date: () => [
             new Date().toLocaleString("es-MX", {

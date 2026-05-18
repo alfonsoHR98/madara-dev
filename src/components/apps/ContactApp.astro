@@ -1,5 +1,10 @@
 ---
 import { Mail } from "@lucide/astro";
+import data from "../../data/resume.json";
+
+const { personalInfo } = data;
+const githubHandle = personalInfo.github.replace(/^https?:\/\/github.com\//, "@");
+const linkedinHandle = personalInfo.linkedin.replace(/^https?:\/\/linkedin.com\/in\//, "").replace(/\/$/, "");
 ---
 
 <section class="contact-panel">
@@ -11,7 +16,7 @@ import { Mail } from "@lucide/astro";
 
     <div class="contact-links">
         <a
-            href="https://github.com/alfonsoHR98"
+            href={personalInfo.github}
             class="contact-card"
             target="_blank"
             rel="noopener noreferrer"
@@ -30,12 +35,12 @@ import { Mail } from "@lucide/astro";
             </span>
             <div class="contact-info">
                 <span class="contact-label">GitHub</span>
-                <span class="contact-handle">@alfonsoHR98</span>
+                <span class="contact-handle">{githubHandle}</span>
             </div>
         </a>
 
         <a
-            href="mailto:alfonsohr_98@outlook.com"
+            href={`mailto:${personalInfo.email}`}
             class="contact-card"
             target="_blank"
             rel="noopener noreferrer"
@@ -45,12 +50,12 @@ import { Mail } from "@lucide/astro";
             </span>
             <div class="contact-info">
                 <span class="contact-label">Email</span>
-                <span class="contact-handle">alfonsohr_98@outlook.com</span>
+                <span class="contact-handle">{personalInfo.email}</span>
             </div>
         </a>
 
         <a
-            href="https://linkedin.com/in/tu-usuario"
+            href={personalInfo.linkedin}
             class="contact-card"
             target="_blank"
             rel="noopener noreferrer"
@@ -69,7 +74,7 @@ import { Mail } from "@lucide/astro";
             </span>
             <div class="contact-info">
                 <span class="contact-label">LinkedIn</span>
-                <span class="contact-handle">tu-usuario</span>
+                <span class="contact-handle">{linkedinHandle}</span>
             </div>
         </a>
     </div>
