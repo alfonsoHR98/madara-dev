@@ -1,5 +1,5 @@
 <div class="terminal-app">
-    <div class="terminal-output" id="terminal-output">
+    <div class="terminal-output" id="terminal-output" aria-live="polite" aria-label="Salida de terminal">
         <div class="terminal-line">
             <span class="term-green">MadaraOS</span> <span class="term-muted">v1.0.0</span>
         </div>
@@ -8,7 +8,7 @@
     </div>
     <div class="terminal-input-row">
         <span class="terminal-prompt">madara@os:~$</span>
-        <input type="text" id="terminal-input" class="terminal-input" autocomplete="off" spellcheck="false" autofocus />
+        <input type="text" id="terminal-input" class="terminal-input" aria-label="Comando de terminal" autocomplete="off" spellcheck="false" autofocus />
     </div>
 </div>
 
@@ -113,6 +113,7 @@
             const win = document.getElementById(id) as HTMLElement;
             if (win) {
                 win.classList.add("active");
+                win.setAttribute("aria-hidden", "false");
                 win.style.opacity = "1";
                 win.style.pointerEvents = "auto";
             }

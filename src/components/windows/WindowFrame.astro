@@ -6,7 +6,7 @@ interface Props {
 const { title, id } = Astro.props;
 ---
 
-<article class="window" id={id} aria-label={title}>
+<article class="window" id={id} aria-label={title} aria-hidden="true">
     <header class="window-titlebar">
         <div class="window-controls">
             <button type="button" class="btn-close" aria-label="Cerrar"></button>

@@ -87,6 +87,7 @@ import StartMenu from "../components/shell/StartMenu.astro";
             btn.id = `dock-${id}`;
             btn.dataset.target = id;
             btn.dataset.label = meta.label;
+            btn.setAttribute("aria-label", `Abrir ${meta.label}`);
             btn.innerHTML = `
                 <div class="dock-icon" style="background:${meta.bg}">${meta.icon}</div>
             `;
@@ -143,6 +144,7 @@ import StartMenu from "../components/shell/StartMenu.astro";
 
             setTimeout(() => {
                 win.classList.remove("active");
+                win.setAttribute("aria-hidden", "true");
                 win.style.transform = "";
                 win.style.transition = "";
                 syncDockState();
@@ -160,6 +162,7 @@ import StartMenu from "../components/shell/StartMenu.astro";
             }
 
             target.classList.add("active");
+            target.setAttribute("aria-hidden", "false");
             target.style.opacity = "1";
             target.style.pointerEvents = "auto";
             bringToFront(target);
@@ -185,20 +188,33 @@ import StartMenu from "../components/shell/StartMenu.astro";
         document.querySelectorAll<HTMLButtonElement>(".start-app-item[data-target]").forEach(btn => {
             btn.addEventListener("click", () => {
                 if (btn.dataset.target) activate(btn.dataset.target);
-                document.getElementById("start-menu")?.classList.remove("open");
+                closeStartMenu();
             });
         });
 
         // ── Start menu toggle ──
         const startBtn = document.getElementById("start-btn");
         const startMenu = document.getElementById("start-menu");
+        function setStartMenuOpen(open: boolean) {
+            startMenu?.classList.toggle("open", open);
+            startMenu?.setAttribute("aria-hidden", String(!open));
+            startBtn?.setAttribute("aria-expanded", String(open));
+        }
+        function closeStartMenu() {
+            setStartMenuOpen(false);
+        }
         startBtn?.addEventListener("click", (e) => {
             e.stopPropagation();
-            startMenu?.classList.toggle("open");
+            setStartMenuOpen(!startMenu?.classList.contains("open"));
         });
         document.addEventListener("click", (e) => {
             if (!startMenu?.contains(e.target as Node)) {
-                startMenu?.classList.remove("open");
+                closeStartMenu();
+            }
+        });
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "Escape") {
+                closeStartMenu();
             }
         });
 
@@ -246,6 +262,7 @@ import StartMenu from "../components/shell/StartMenu.astro";
                 win.style.transform = "scale(0.95)";
                 setTimeout(() => {
                     win.classList.remove("active");
+                    win.setAttribute("aria-hidden", "true");
                     win.style.transform = "";
                     win.style.transition = "";
                     win.style.pointerEvents = "none";
