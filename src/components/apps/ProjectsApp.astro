@@ -12,16 +12,24 @@ const rest = projects.filter((project) => !project.featured);
 ---
 
 <section class="projects-panel">
-    <p class="app-label">Proyectos</p>
-    <h1>Mi trabajo</h1>
+    <div class="projects-header">
+        <div>
+            <p class="app-label">Proyectos</p>
+            <h1>Mi trabajo</h1>
+        </div>
+        <span class="projects-count">{projects.length} builds activos</span>
+    </div>
 
     {featured && (
         <article class="project-card project-featured" style={`--card-color: ${featured.color}`}>
+            <div class="project-orb" aria-hidden="true"></div>
             <div class="featured-badge">Destacado</div>
-            <h2>{featured.name}</h2>
-            <p>{featured.desc}</p>
-            <div class="project-stack">
-                {featured.tech.map((tech) => <span class="tag">{tech}</span>)}
+            <div class="project-featured-body">
+                <h2>{featured.name}</h2>
+                <p>{featured.desc}</p>
+                <div class="project-stack">
+                    {featured.tech.map((tech) => <span class="tag">{tech}</span>)}
+                </div>
             </div>
             <div class="project-links">
                 <a href={featured.url}>Ver sitio</a>
@@ -32,6 +40,7 @@ const rest = projects.filter((project) => !project.featured);
     <div class="projects-grid">
         {rest.map(p => (
             <article class="project-card" style={`--card-color: ${p.color}`}>
+                <span class="project-index">0{projects.indexOf(p) + 1}</span>
                 <div class="project-info">
                     <h2>{p.name}</h2>
                     <p>{p.desc}</p>
