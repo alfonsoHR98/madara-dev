@@ -9,7 +9,7 @@ const featuredProjects = projects.slice(0, 3);
     <div class="resume-hero-grid">
         <div class="about-avatar">
             {personalInfo.avatarUrl ? (
-                <img src={personalInfo.avatarUrl} alt={personalInfo.name} />
+                <img src={personalInfo.avatarUrl} alt={personalInfo.name} width="96" height="96" loading="lazy" decoding="async" />
             ) : (
                 <div class="avatar-initials">{personalInfo.initials}</div>
             )}
@@ -17,7 +17,7 @@ const featuredProjects = projects.slice(0, 3);
 
         <div class="resume-header-info">
             <p class="app-label">Perfil</p>
-            <h1 class="resume-name">{personalInfo.name}</h1>
+            <h2 class="resume-name">{personalInfo.name}</h2>
             <p class="about-alias">{personalInfo.alias} · {personalInfo.title}</p>
             <p class="about-bio">{personalInfo.summary}</p>
 
@@ -43,13 +43,13 @@ const featuredProjects = projects.slice(0, 3);
     <div class="resume-separator"></div>
 
     <div class="resume-section resume-section--featured">
-        <h2 class="resume-section-title">Experiencia reciente</h2>
+        <h3 class="resume-section-title">Experiencia reciente</h3>
         <div class="resume-timeline">
             {experience.map((job) => (
                 <article class="resume-exp-item">
                     <div class="resume-exp-header">
                         <div>
-                            <h3 class="resume-exp-role">{job.role}</h3>
+                            <h4 class="resume-exp-role">{job.role}</h4>
                             <p class="resume-exp-company">{job.company}</p>
                             <p class="resume-exp-location">{job.location}</p>
                         </div>
@@ -66,27 +66,36 @@ const featuredProjects = projects.slice(0, 3);
     <div class="resume-separator"></div>
 
     <div class="resume-section">
-        <h2 class="resume-section-title">Proyectos destacados</h2>
+        <h3 class="resume-section-title">Proyectos destacados</h3>
         <div class="resume-projects-grid">
-            {featuredProjects.map((project) => (
-                <a href={project.url} target="_blank" rel="noopener noreferrer" class="resume-project-card">
-                    <div class="resume-project-top">
-                        <h3>{project.name}</h3>
-                        <span>↗</span>
-                    </div>
-                    <p>{project.desc}</p>
-                    <div class="resume-project-stack">
-                        {project.tech.map((tech) => <span class="resume-tag">{tech}</span>)}
-                    </div>
-                </a>
-            ))}
+            {featuredProjects.map((project) => {
+                const hasUrl = Boolean(project.url && project.url !== "#");
+                const Tag = hasUrl ? "a" : "div";
+                return (
+                    <Tag
+                        href={hasUrl ? project.url : undefined}
+                        target={hasUrl ? "_blank" : undefined}
+                        rel={hasUrl ? "noopener noreferrer" : undefined}
+                        class="resume-project-card"
+                    >
+                        <div class="resume-project-top">
+                            <h4>{project.name}</h4>
+                            {hasUrl && <span>↗</span>}
+                        </div>
+                        <p>{project.desc}</p>
+                        <div class="resume-project-stack">
+                            {project.tech.map((tech) => <span class="resume-tag">{tech}</span>)}
+                        </div>
+                    </Tag>
+                );
+            })}
         </div>
     </div>
 
     <div class="resume-separator"></div>
 
     <div class="resume-section">
-        <h2 class="resume-section-title">Stack</h2>
+        <h3 class="resume-section-title">Stack</h3>
         <div class="resume-skills-list">
             {skills.map((group) => (
                 <div class="resume-skill-group">
@@ -103,13 +112,13 @@ const featuredProjects = projects.slice(0, 3);
 
     <div class="resume-bottom-grid">
         <div class="resume-section">
-            <h2 class="resume-section-title">Educación</h2>
+            <h3 class="resume-section-title">Educación</h3>
             <div class="resume-education-list">
                 {education.map((edu) => (
                     <article class="resume-edu-item">
                         <div class="resume-edu-header">
                             <div>
-                                <h3 class="resume-edu-degree">{edu.degree}</h3>
+                                <h4 class="resume-edu-degree">{edu.degree}</h4>
                                 <p class="resume-edu-institution">{edu.institution}</p>
                             </div>
                             <span class="resume-muted-text">{edu.period}</span>
@@ -121,7 +130,7 @@ const featuredProjects = projects.slice(0, 3);
         </div>
 
         <div class="resume-section">
-            <h2 class="resume-section-title">Idiomas</h2>
+            <h3 class="resume-section-title">Idiomas</h3>
             <div class="resume-languages-grid">
                 {languages.map((language) => (
                     <div class="resume-lang-item">

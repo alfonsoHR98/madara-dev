@@ -3,27 +3,44 @@ import "../styles/globals.css";
 const {
     title = "Alfonso Hernández | Full Stack Developer",
     description = "Portfolio de Alfonso Hernández, Full Stack Developer especializado en interfaces inmersivas, automatización y experiencias web modernas.",
-    image = "/wallpapers/back.png",
+    image = "/og.png",
 } = Astro.props;
 
+const siteUrl = Astro.site ? Astro.site.toString() : undefined;
 const canonicalUrl = Astro.site ? new URL(Astro.url.pathname, Astro.site).toString() : undefined;
 const imageUrl = Astro.site ? new URL(image, Astro.site).toString() : image;
-const personSchema = {
+const schema = {
     "@context": "https://schema.org",
-    "@type": "Person",
-    name: "Alfonso Hernández",
-    alternateName: "madara",
-    jobTitle: "Full Stack Developer",
-    email: "mailto:contact@madara.dev",
-    address: {
-        "@type": "PostalAddress",
-        addressCountry: "MX",
-    },
-    sameAs: [
-        "https://github.com/alfonsoHR98",
-        "https://linkedin.com/in/tu-perfil",
+    "@graph": [
+        {
+            "@type": "Person",
+            "@id": `${siteUrl ?? ""}#person`,
+            name: "Alfonso Hernández",
+            alternateName: "madara",
+            jobTitle: "Full Stack Developer",
+            url: siteUrl,
+            email: "mailto:contact@madara.dev",
+            address: {
+                "@type": "PostalAddress",
+                addressCountry: "MX",
+            },
+            sameAs: [
+                "https://github.com/alfonsoHR98",
+                // TODO: reemplazar con la URL real de LinkedIn
+                "https://linkedin.com/in/tu-perfil",
+            ],
+            knowsAbout: ["Astro", "React", "TypeScript", "Node.js", "PostgreSQL", "Automatización"],
+        },
+        {
+            "@type": "WebSite",
+            "@id": `${siteUrl ?? ""}#website`,
+            name: "MadaraOS",
+            alternateName: "Alfonso Hernández — Portfolio",
+            url: siteUrl,
+            inLanguage: "es-MX",
+            publisher: { "@id": `${siteUrl ?? ""}#person` },
+        },
     ],
-    knowsAbout: ["Astro", "React", "TypeScript", "Node.js", "PostgreSQL", "Automatización"],
 };
 ---
 
@@ -35,11 +52,20 @@ const personSchema = {
         <title>{title}</title>
         <meta name="description" content={description} />
         <meta name="robots" content="index, follow, max-image-preview:large" />
+        <meta name="theme-color" content="#0f0f10" />
         {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        <link rel="manifest" href="/site.webmanifest" />
         <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="MadaraOS" />
+        {canonicalUrl && <meta property="og:url" content={canonicalUrl} />}
         <meta property="og:title" content={title} />
         <meta property="og:description" content={description} />
         <meta property="og:image" content={imageUrl} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:image:alt" content="MadaraOS — terminal con el comando whoami mostrando Alfonso Hernández, Full Stack Developer" />
         <meta property="og:locale" content="es_MX" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={title} />
@@ -51,11 +77,52 @@ const personSchema = {
             href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap"
             rel="stylesheet"
         />
-        <script type="application/ld+json" set:html={JSON.stringify(personSchema)} />
+        <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+        <script is:inline>
+            (function () {
+                try {
+                    if (
+                        matchMedia("(prefers-reduced-motion: reduce)").matches ||
+                        sessionStorage.getItem("madara:booted")
+                    ) {
+                        document.documentElement.classList.add("boot-skip");
+                    }
+                } catch (e) {
+                    document.documentElement.classList.add("boot-skip");
+                }
+            })();
+        </script>
     </head>
     <body>
+        <a href="#main-content" class="skip-link">Saltar al contenido</a>
+        <div id="boot-screen" aria-hidden="true">
+            <div class="boot-logo"><span class="boot-prompt">&gt;</span>M<span class="boot-cursor"></span></div>
+            <p class="boot-status">MadaraOS v1.0 — iniciando sistema…</p>
+            <div class="boot-bar"><div class="boot-bar-fill"></div></div>
+        </div>
         <div class="os-shell">
             <slot />
         </div>
+        <script>
+            const boot = document.getElementById("boot-screen");
+            if (document.documentElement.classList.contains("boot-skip")) {
+                boot?.remove();
+            } else if (boot) {
+                const endBoot = () => {
+                    boot.classList.add("boot-done");
+                    try {
+                        sessionStorage.setItem("madara:booted", "1");
+                    } catch {}
+                };
+                const timer = setTimeout(endBoot, 1450);
+                const skipBoot = () => {
+                    clearTimeout(timer);
+                    endBoot();
+                };
+                window.addEventListener("pointerdown", skipBoot, { once: true });
+                window.addEventListener("keydown", skipBoot, { once: true });
+                boot.addEventListener("transitionend", () => boot.remove(), { once: true });
+            }
+        </script>
     </body>
 </html>

@@ -39,49 +39,92 @@
   "projects": [
     {
       "name": "MadaraOS",
-      "tech": ["Astro", "TypeScript", "CSS"],
+      "tech": [
+        "Astro",
+        "TypeScript",
+        "CSS"
+      ],
       "desc": "Portfolio personal con interfaz estilo sistema operativo, ventanas arrastrables y animaciones.",
       "url": "#",
-      "stars": null
+      "stars": null,
+      "color": "#4f9eff"
     },
     {
       "name": "Proyecto 2",
-      "tech": ["Next.js", "Supabase", "TypeScript"],
+      "tech": [
+        "Next.js",
+        "Supabase",
+        "TypeScript"
+      ],
       "desc": "Descripción breve del proyecto. Edítala en resume.json.",
       "url": "#",
-      "stars": null
+      "stars": null,
+      "color": "#ea4b71"
     },
     {
       "name": "Proyecto 3",
-      "tech": ["Node.js", "PostgreSQL", "AWS"],
+      "tech": [
+        "Node.js",
+        "PostgreSQL",
+        "AWS"
+      ],
       "desc": "Descripción breve del proyecto. Edítala en resume.json.",
       "url": "#",
-      "stars": null
+      "stars": null,
+      "color": "#3ecf8e"
     },
     {
       "name": "Proyecto 4",
-      "tech": ["React", "MongoDB", "n8n"],
+      "tech": [
+        "React",
+        "MongoDB",
+        "n8n"
+      ],
       "desc": "Descripción breve del proyecto. Edítala en resume.json.",
       "url": "#",
-      "stars": null
+      "stars": null,
+      "color": "#ff9900"
     }
   ],
   "skills": [
     {
       "category": "Frontend",
-      "items": ["TypeScript", "JavaScript", "React", "Next.js", "Astro"]
+      "items": [
+        "TypeScript",
+        "JavaScript",
+        "React",
+        "Next.js",
+        "Astro"
+      ]
     },
     {
       "category": "Backend & DB",
-      "items": ["Node.js", "PostgreSQL", "Supabase", "MongoDB", "MySQL"]
+      "items": [
+        "Node.js",
+        "PostgreSQL",
+        "Supabase",
+        "MongoDB",
+        "MySQL"
+      ]
     },
     {
       "category": "Cloud & DevOps",
-      "items": ["AWS", "Google Cloud", "Docker", "Git", "Vercel"]
+      "items": [
+        "AWS",
+        "Google Cloud",
+        "Docker",
+        "Git",
+        "Vercel"
+      ]
     },
     {
       "category": "Automatización",
-      "items": ["n8n", "Webhooks", "APIs REST", "GraphQL"]
+      "items": [
+        "n8n",
+        "Webhooks",
+        "APIs REST",
+        "GraphQL"
+      ]
     }
   ],
   "education": [
@@ -99,7 +142,15 @@
     }
   ],
   "languages": [
-    { "lang": "Español", "level": "Nativo", "percentage": 100 },
-    { "lang": "Inglés", "level": "Intermedio", "percentage": 65 }
+    {
+      "lang": "Español",
+      "level": "Nativo",
+      "percentage": 100
+    },
+    {
+      "lang": "Inglés",
+      "level": "Intermedio",
+      "percentage": 65
+    }
   ]
 }

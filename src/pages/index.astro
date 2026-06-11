@@ -1,4 +1,6 @@
 ---
+export const prerender = true;
+
 import OSLayout from "../layouts/OSLayout.astro";
 import Desktop from "../components/shell/Desktop.astro";
 import Taskbar from "../components/shell/Taskbar.astro";
@@ -15,6 +17,7 @@ import StartMenu from "../components/shell/StartMenu.astro";
 ---
 
 <OSLayout title="Alfonso Hernández | Full Stack Developer">
+    <h1 class="sr-only">Alfonso Hernández — Full Stack Developer | MadaraOS</h1>
     <Wallpaper />
     <Menubar />
     <Desktop>
@@ -82,9 +85,12 @@ import StartMenu from "../components/shell/StartMenu.astro";
 
         const PINNED_APPS = ["window-terminal"];
 
-        // Dock inicial: apps pineadas + terminal abierta
+        // Dock inicial: apps pineadas + terminal abierta al final de la secuencia de arranque
         PINNED_APPS.forEach(addToDock);
-        activate("window-terminal");
+        const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+        const bootSkipped = document.documentElement.classList.contains("boot-skip");
+        const terminalDelay = reduceMotion ? 0 : bootSkipped ? 850 : 2300;
+        setTimeout(() => activate("window-terminal"), terminalDelay);
 
         // ── Dock item management ──
         function addToDock(id: string) {
@@ -126,9 +132,11 @@ import StartMenu from "../components/shell/StartMenu.astro";
         }
 
         // ── Focus state ──
+        const menubarApp = document.getElementById("menubar-app");
         function setFocused(targetId: string) {
             focusedWindowId = targetId;
             syncDockState(targetId);
+            if (menubarApp) menubarApp.textContent = APP_META[targetId]?.label ?? "";
         }
 
         function bringToFront(win: HTMLElement) {
@@ -215,6 +223,12 @@ import StartMenu from "../components/shell/StartMenu.astro";
             bringToFront(target);
             addToDock(targetId);
             syncDockState(targetId);
+
+            const dockBtn = getDockBtn(targetId);
+            if (dockBtn && !dockBtn.classList.contains("bouncing")) {
+                dockBtn.classList.add("bouncing");
+                dockBtn.addEventListener("animationend", () => dockBtn.classList.remove("bouncing"), { once: true });
+            }
         }
 
         document.addEventListener("madara:open-app", (event) => {

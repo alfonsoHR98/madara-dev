@@ -1,11 +1,12 @@
 ---
 import data from "../../data/resume.json";
 
-const colors = ["#4f9eff", "#ea4b71", "#3ecf8e", "#ff9900"];
+const fallbackColors = ["#4f9eff", "#ea4b71", "#3ecf8e", "#ff9900"];
 const projects = data.projects.map((project, index) => ({
     ...project,
-    color: colors[index % colors.length],
+    color: project.color ?? fallbackColors[index % fallbackColors.length],
     featured: index === 0,
+    hasUrl: Boolean(project.url && project.url !== "#"),
 }));
 const featured = projects.find((project) => project.featured);
 const rest = projects.filter((project) => !project.featured);
@@ -15,7 +16,7 @@ const rest = projects.filter((project) => !project.featured);
     <div class="projects-header">
         <div>
             <p class="app-label">Proyectos</p>
-            <h1>Mi trabajo</h1>
+            <h2>Mi trabajo</h2>
         </div>
         <span class="projects-count">{projects.length} builds activos</span>
     </div>
@@ -25,14 +26,18 @@ const rest = projects.filter((project) => !project.featured);
             <div class="project-orb" aria-hidden="true"></div>
             <div class="featured-badge">Destacado</div>
             <div class="project-featured-body">
-                <h2>{featured.name}</h2>
+                <h3>{featured.name}</h3>
                 <p>{featured.desc}</p>
                 <div class="project-stack">
                     {featured.tech.map((tech) => <span class="tag">{tech}</span>)}
                 </div>
             </div>
             <div class="project-links">
-                <a href={featured.url}>Ver sitio</a>
+                {featured.hasUrl ? (
+                    <a href={featured.url} target="_blank" rel="noopener noreferrer">Ver sitio</a>
+                ) : (
+                    <span class="project-link-soon">Próximamente</span>
+                )}
             </div>
         </article>
     )}
@@ -42,14 +47,18 @@ const rest = projects.filter((project) => !project.featured);
             <article class="project-card" style={`--card-color: ${p.color}`}>
                 <span class="project-index">0{projects.indexOf(p) + 1}</span>
                 <div class="project-info">
-                    <h2>{p.name}</h2>
+                    <h3>{p.name}</h3>
                     <p>{p.desc}</p>
                     <div class="project-stack">
                         {p.tech.map((tech) => <span class="tag">{tech}</span>)}
                     </div>
                 </div>
                 <div class="project-links">
-                    <a href={p.url}>Ver sitio</a>
+                    {p.hasUrl ? (
+                        <a href={p.url} target="_blank" rel="noopener noreferrer">Ver sitio</a>
+                    ) : (
+                        <span class="project-link-soon">Próximamente</span>
+                    )}
                 </div>
             </article>
         ))}
