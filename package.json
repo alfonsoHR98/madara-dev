@@ -9,16 +9,10 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/react": "^5.0.4",
-    "@astrojs/vercel": "^9.0.5",
+    "@astrojs/sitemap": "^3.7.3",
+    "@astrojs/vercel": "^10.0.8",
     "@lucide/astro": "^1.8.0",
-    "@types/react": "^19.2.14",
-    "@types/react-dom": "^19.2.3",
-    "astro": "^5.16.9",
-    "framer-motion": "^12.38.0",
-    "lucide-react": "^1.9.0",
-    "react": "^19.2.5",
-    "react-dom": "^19.2.5",
+    "astro": "^6.4.6",
     "resend": "^6.12.3"
   }
 }
