@@ -451,8 +451,13 @@ body {
     border: 0;
     background: transparent;
     cursor: nwse-resize;
-    opacity: 0.85;
+    opacity: 0;
+    transition: opacity 0.2s ease;
     z-index: 3;
+}
+
+.window:hover .window-resize-handle {
+    opacity: 0.85;
 }
 
 .window-resize-handle::before {

@@ -92,7 +92,7 @@
 
 #snake-canvas {
     display: block;
-    border-radius: 10px;
+    background: #0a0a0c;
 }
 
 .snake-overlay {
@@ -208,13 +208,13 @@
     }
 
     function resize() {
-        // Use the full arena dimensions, keep canvas square
         const w = arena.clientWidth;
         const h = arena.clientHeight;
-        const size = Math.min(w, h);
+        // Size must be an exact multiple of COLS so no fractional leftover strip
+        cellSize = Math.max(4, Math.floor(Math.min(w, h) / COLS));
+        const size = cellSize * COLS;
         canvas.width = size;
         canvas.height = size;
-        cellSize = Math.floor(size / COLS);
         if (running && !paused) draw();
         else drawIdle();
     }
@@ -256,6 +256,10 @@
 
     function draw() {
         const total = COLS * cellSize;
+        ctx.save();
+        ctx.beginPath();
+        ctx.rect(0, 0, total, total);
+        ctx.clip();
         ctx.fillStyle = PALETTE.bg;
         ctx.fillRect(0, 0, total, total);
         drawGrid();
@@ -308,6 +312,7 @@
                 ctx.fill();
             });
         }
+        ctx.restore();
     }
 
     function tick() {
