@@ -12,7 +12,10 @@ const terminalData = {
     <div class="terminal-output" id="terminal-output" aria-live="polite" aria-label="Salida de terminal"></div>
     <div class="terminal-input-row">
         <span class="terminal-prompt">madara@os:~$</span>
-        <input type="text" id="terminal-input" class="terminal-input" aria-label="Comando de terminal" autocomplete="off" spellcheck="false" autofocus />
+        <div class="terminal-input-wrap">
+            <input type="text" id="terminal-input" class="terminal-input" aria-label="Comando de terminal" autocomplete="off" spellcheck="false" autofocus />
+            <span class="terminal-fake" aria-hidden="true"><span class="terminal-mirror" id="terminal-mirror"></span><span class="terminal-cursor"></span></span>
+        </div>
     </div>
 </div>
 
@@ -54,7 +57,9 @@ const terminalData = {
             '  <span class="term-green">open &lt;app&gt;</span>   — Abre una ventana (about, projects, contact, browser)',
             '  <span class="term-green">date</span>         — Fecha y hora actual',
             '  <span class="term-green">neofetch</span>     — Info del sistema',
+            '  <span class="term-green">history</span>      — Historial de comandos',
             '  <span class="term-green">clear</span>        — Limpiar terminal',
+            '  <span class="term-green">exit</span>         — Minimizar la terminal',
         ],
         whoami: () => [
             `<span class="term-accent">${personalInfo.name}</span> <span class="term-muted">(${personalInfo.alias})</span>`,
@@ -102,6 +107,21 @@ const terminalData = {
             }),
         ],
         neofetch: neofetchLines,
+        history: () => {
+            if (history.length === 0) return ['<span class="term-muted">Sin historial todavía.</span>'];
+            return [...history].reverse().map((entry, index) => `  ${String(index + 1).padStart(3)}  ${entry}`);
+        },
+        sudo: () => [
+            '<span class="term-red">madara is not in the sudoers file.</span> This incident will be reported.',
+        ],
+        exit: () => {
+            setTimeout(() => {
+                document.getElementById("window-terminal")
+                    ?.querySelector<HTMLElement>('[aria-label="Minimizar"]')
+                    ?.click();
+            }, 150);
+            return ['<span class="term-muted">logout</span>'];
+        },
         clear: () => {
             output.innerHTML = "";
             return [];
@@ -163,6 +183,12 @@ const terminalData = {
         print(["&nbsp;"]);
     }
 
+    const mirror = document.getElementById("terminal-mirror");
+    const syncMirror = () => {
+        if (mirror) mirror.textContent = input.value;
+    };
+    input.addEventListener("input", syncMirror);
+
     input.addEventListener("keydown", (e) => {
         if (e.key === "Enter") {
             run(input.value);
@@ -183,14 +209,27 @@ const terminalData = {
                 input.value = "";
             }
         }
+        syncMirror();
     });
 
-    print(neofetchLines());
-    print([
+    // Neofetch inicial con efecto de tipeo línea a línea
+    const introLines = [
+        ...neofetchLines(),
         '',
         '<span class="term-muted">Escribe <span class="term-accent">help</span> para ver los comandos disponibles.</span>',
         '&nbsp;',
-    ]);
+    ];
+    const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduceMotion) {
+        print(introLines);
+    } else {
+        // La ventana de terminal se abre al final de la secuencia de arranque (ver index.astro)
+        const bootSkipped = document.documentElement.classList.contains("boot-skip");
+        const introDelay = bootSkipped ? 1100 : 2550;
+        introLines.forEach((line, index) => {
+            setTimeout(() => print([line]), introDelay + index * 45);
+        });
+    }
 
     // Focus al hacer clic en cualquier parte de la terminal
     document.querySelector(".terminal-app")?.addEventListener("click", () => input.focus());

@@ -11,8 +11,8 @@ const icons = [
 ---
 
 <div class="desktop-icons">
-    {icons.map(({ id, label, Icon }) => (
-        <button class="desktop-icon" data-target={id} type="button">
+    {icons.map(({ id, label, Icon }, index) => (
+        <button class="desktop-icon" data-target={id} type="button" style={`--i: ${index}`}>
             <Icon size={36} />
             <span>{label}</span>
         </button>
