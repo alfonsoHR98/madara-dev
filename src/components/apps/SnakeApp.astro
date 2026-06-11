@@ -17,7 +17,7 @@
         </div>
     </div>
 
-    <div class="snake-arena">
+    <div class="snake-arena" id="snake-arena">
         <canvas id="snake-canvas"></canvas>
         <div id="snake-overlay" class="snake-overlay">
             <p class="snake-overlay-title">&gt;SNAKE_</p>
@@ -37,15 +37,18 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 1rem;
-    padding: 0.5rem 0;
+    gap: 0.75rem;
+    height: 100%;
+    width: 100%;
     user-select: none;
+    min-height: 0;
 }
 
 .snake-hud {
     display: flex;
-    gap: 1.5rem;
+    gap: 2.5rem;
     font-family: var(--font-mono);
+    flex-shrink: 0;
 }
 
 .snake-hud-item {
@@ -63,7 +66,7 @@
 }
 
 .snake-hud-value {
-    font-size: 1.4rem;
+    font-size: 1.6rem;
     font-weight: 700;
     color: #3ecf8e;
     min-width: 3ch;
@@ -77,12 +80,19 @@
     border: 1px solid rgba(62, 207, 142, 0.2);
     box-shadow:
         0 0 0 1px rgba(62, 207, 142, 0.08),
-        0 0 40px rgba(62, 207, 142, 0.06),
-        inset 0 0 60px rgba(0, 0, 0, 0.4);
+        0 0 60px rgba(62, 207, 142, 0.08),
+        inset 0 0 80px rgba(0, 0, 0, 0.5);
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
 }
 
 #snake-canvas {
     display: block;
+    border-radius: 10px;
 }
 
 .snake-overlay {
@@ -92,9 +102,10 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 0.75rem;
-    background: rgba(10, 10, 12, 0.82);
-    backdrop-filter: blur(6px);
+    gap: 0.85rem;
+    background: rgba(10, 10, 12, 0.86);
+    backdrop-filter: blur(8px);
+    border-radius: inherit;
     transition: opacity 0.2s ease;
 }
 
@@ -105,58 +116,62 @@
 
 .snake-overlay-title {
     font-family: var(--font-mono);
-    font-size: clamp(1.5rem, 4cqi, 2.5rem);
+    font-size: 2rem;
     font-weight: 700;
     color: #3ecf8e;
     letter-spacing: 0.1em;
-    text-shadow: 0 0 24px rgba(62, 207, 142, 0.5);
+    text-shadow: 0 0 32px rgba(62, 207, 142, 0.6);
 }
 
 .snake-overlay-sub {
     font-family: var(--font-mono);
-    font-size: 0.75rem;
+    font-size: 0.78rem;
     color: var(--muted);
 }
 
 .snake-overlay-score {
     font-family: var(--font-mono);
-    font-size: 0.85rem;
-    color: rgba(242, 242, 247, 0.7);
+    font-size: 0.9rem;
+    color: rgba(242, 242, 247, 0.75);
+    text-align: center;
 }
 
 .snake-btn {
     font-family: var(--font-mono);
-    font-size: 0.8rem;
+    font-size: 0.82rem;
     text-transform: uppercase;
     letter-spacing: 0.12em;
     color: #0a0a0c;
     background: #3ecf8e;
     border: none;
     border-radius: 6px;
-    padding: 0.55rem 1.5rem;
+    padding: 0.6rem 2rem;
     cursor: pointer;
     transition: transform 0.15s ease, box-shadow 0.15s ease;
-    box-shadow: 0 0 20px rgba(62, 207, 142, 0.35);
+    box-shadow: 0 0 24px rgba(62, 207, 142, 0.4);
+    margin-top: 0.25rem;
 }
 
 .snake-btn:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 0 28px rgba(62, 207, 142, 0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 0 36px rgba(62, 207, 142, 0.6);
 }
 
 .snake-controls-hint {
     display: flex;
-    gap: 1.5rem;
+    gap: 1.75rem;
     font-family: var(--font-mono);
     font-size: 0.65rem;
     color: var(--muted);
-    opacity: 0.6;
+    opacity: 0.55;
+    flex-shrink: 0;
 }
 </style>
 
 <script>
     const canvas = document.getElementById("snake-canvas") as HTMLCanvasElement;
     const ctx = canvas.getContext("2d")!;
+    const arena = document.getElementById("snake-arena")!;
     const overlay = document.getElementById("snake-overlay")!;
     const btn = document.getElementById("snake-btn") as HTMLButtonElement;
     const scoreEl = document.getElementById("snake-score")!;
@@ -167,12 +182,11 @@
     const ROWS = 20;
     const PALETTE = {
         bg: "#0a0a0c",
-        grid: "rgba(255,255,255,0.03)",
+        grid: "rgba(255,255,255,0.028)",
         snake: "#3ecf8e",
         snakeHead: "#5ffba8",
         food: "#ff5f5f",
         foodGlow: "rgba(255,95,95,0.4)",
-        text: "#f2f2f7",
     };
 
     let cellSize = 20;
@@ -194,8 +208,10 @@
     }
 
     function resize() {
-        const arena = canvas.parentElement!;
-        const size = Math.min(arena.clientWidth - 2, arena.clientHeight - 2, 400);
+        // Use the full arena dimensions, keep canvas square
+        const w = arena.clientWidth;
+        const h = arena.clientHeight;
+        const size = Math.min(w, h);
         canvas.width = size;
         canvas.height = size;
         cellSize = Math.floor(size / COLS);
@@ -211,18 +227,19 @@
     }
 
     function drawGrid() {
+        const total = COLS * cellSize;
         ctx.strokeStyle = PALETTE.grid;
         ctx.lineWidth = 0.5;
         for (let r = 0; r <= ROWS; r++) {
             ctx.beginPath();
             ctx.moveTo(0, r * cellSize);
-            ctx.lineTo(COLS * cellSize, r * cellSize);
+            ctx.lineTo(total, r * cellSize);
             ctx.stroke();
         }
         for (let c = 0; c <= COLS; c++) {
             ctx.beginPath();
             ctx.moveTo(c * cellSize, 0);
-            ctx.lineTo(c * cellSize, ROWS * cellSize);
+            ctx.lineTo(c * cellSize, total);
             ctx.stroke();
         }
     }
@@ -238,37 +255,36 @@
     }
 
     function draw() {
-        const s = canvas.width;
+        const total = COLS * cellSize;
         ctx.fillStyle = PALETTE.bg;
-        ctx.fillRect(0, 0, s, s);
+        ctx.fillRect(0, 0, total, total);
         drawGrid();
 
         // Food glow
         const fx = food.x * cellSize + cellSize / 2;
         const fy = food.y * cellSize + cellSize / 2;
-        const grd = ctx.createRadialGradient(fx, fy, 0, fx, fy, cellSize * 1.4);
+        const grd = ctx.createRadialGradient(fx, fy, 0, fx, fy, cellSize * 1.6);
         grd.addColorStop(0, PALETTE.foodGlow);
         grd.addColorStop(1, "transparent");
         ctx.fillStyle = grd;
         ctx.fillRect(food.x * cellSize - cellSize, food.y * cellSize - cellSize, cellSize * 3, cellSize * 3);
 
         // Food
-        const r = cellSize * 0.38;
         ctx.fillStyle = PALETTE.food;
         ctx.shadowColor = PALETTE.food;
-        ctx.shadowBlur = 8;
+        ctx.shadowBlur = cellSize * 0.4;
         ctx.beginPath();
-        ctx.roundRect(food.x * cellSize + cellSize * 0.12, food.y * cellSize + cellSize * 0.12, cellSize * 0.76, cellSize * 0.76, r);
+        const pr = cellSize * 0.35;
+        ctx.roundRect(food.x * cellSize + cellSize * 0.12, food.y * cellSize + cellSize * 0.12, cellSize * 0.76, cellSize * 0.76, pr);
         ctx.fill();
         ctx.shadowBlur = 0;
 
         // Snake body
         for (let i = snake.length - 1; i >= 0; i--) {
             const seg = snake[i];
-            const t = i / snake.length;
-            const alpha = 0.45 + 0.55 * (1 - t);
+            const t = i / Math.max(snake.length, 1);
+            ctx.globalAlpha = 0.45 + 0.55 * (1 - t);
             ctx.fillStyle = i === 0 ? PALETTE.snakeHead : PALETTE.snake;
-            ctx.globalAlpha = alpha;
             const pad = i === 0 ? 1 : 2;
             const rad = cellSize * (i === 0 ? 0.3 : 0.22);
             ctx.beginPath();
@@ -298,7 +314,6 @@
         dir = { ...nextDir };
         const head = { x: (snake[0].x + dir.x + COLS) % COLS, y: (snake[0].y + dir.y + ROWS) % ROWS };
 
-        // Self-collision
         if (snake.some(s => s.x === head.x && s.y === head.y)) {
             gameOver();
             return;
@@ -361,8 +376,7 @@
         running = false;
         cancelAnimationFrame(loopId);
         const sub = overlay.querySelector(".snake-overlay-sub")!;
-        const existing = overlay.querySelector(".snake-overlay-score");
-        if (existing) existing.remove();
+        overlay.querySelector(".snake-overlay-score")?.remove();
 
         const scoreP = document.createElement("p");
         scoreP.className = "snake-overlay-score";
@@ -396,12 +410,9 @@
         if (e.key === "p" || e.key === "P") { togglePause(); return; }
         const newDir = keyMap[e.key];
         if (!newDir) return;
-        // Prevent reversing
         if (newDir.x === -dir.x && newDir.y === -dir.y) return;
         nextDir = newDir;
-        if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)) {
-            e.preventDefault();
-        }
+        if (e.key.startsWith("Arrow")) e.preventDefault();
     });
 
     // Touch swipe
@@ -426,8 +437,7 @@
     btn.addEventListener("click", startGame);
 
     const ro = new ResizeObserver(resize);
-    ro.observe(canvas.parentElement!);
+    ro.observe(arena);
     resize();
-    drawIdle();
     hiscoreEl.textContent = String(hiscore);
 </script>
