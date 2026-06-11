@@ -54,7 +54,7 @@ const terminalData = {
             '  <span class="term-green">contact</span>      — Cómo contactarme',
             '  <span class="term-green">apps</span>         — Lista de apps del escritorio',
             '  <span class="term-green">shortcuts</span>    — Atajos de teclado',
-            '  <span class="term-green">open &lt;app&gt;</span>   — Abre una ventana (about, projects, contact, browser)',
+            '  <span class="term-green">open &lt;app&gt;</span>   — Abre una ventana (about, projects, contact, browser, snake)',
             '  <span class="term-green">date</span>         — Fecha y hora actual',
             '  <span class="term-green">neofetch</span>     — Info del sistema',
             '  <span class="term-green">history</span>      — Historial de comandos',
@@ -89,6 +89,7 @@ const terminalData = {
             '  projects  — Proyectos destacados',
             '  contact   — Formas de contacto',
             '  browser   — Navegador integrado',
+            '  snake     — <span class="term-green">Snake game</span>',
         ],
         shortcuts: () => [
             '<span class="term-accent">Atajos OS:</span>',
@@ -152,6 +153,7 @@ const terminalData = {
             projects: "window-projects",
             contact: "window-contact",
             browser: "window-browser",
+            snake: "window-snake",
         };
         const id = map[arg];
         if (id) {
